@@ -27,7 +27,7 @@ ai: human
 > * If you just use redis make the session provider, this solution is completely instead of the Asp.Net session provider.
 > * But if you want `master-slave` switching or mutltiple instance used in redis master-slave swtiching, I fork the project and checkout a new branch, the code --> **[see here](https://github.com/itabas016/aspnet-redis-providers)**
 
-> BTW, How to install redis and redis sentinel please **[see here](../../../../2016/09/20/tools/chocolate-intall-redis-windows/)**, And the detail `Redis Sentinel` configuration for windows please **[see here](https://github.com/itabas016/TutorialsPoint/blob/master/redis/sentinel.md)** 
+> BTW, How to install redis and redis sentinel please **[see here](/2016/09/20/tools/chocolate-intall-redis-windows/)**, And the detail `Redis Sentinel` configuration for windows please **[see here](https://github.com/itabas016/TutorialsPoint/blob/master/redis/sentinel.md)** 
 
 ![redis-master-slave-sentinel](/screenshots/redis-master-slave-sentinel.png)
 
@@ -74,7 +74,7 @@ ai: human
 
 > So, if I don't change the source code, I can't get the `master ip` when master instance crashed, but it's other way to get the IP, `Keepalived`, It will generate the `virtual IP`, and you can bind your redis instances ip, Ahha It's only support on linux, so this solution is not suitable for me.
 
-> And the detail configuration and How to realize it, please **[see this article](../../../../2016/09/29/web/use-keepalived-switching-master-slave-solution/)** 
+> And the detail configuration and How to realize it, please **[see this article](/2016/09/29/web/use-keepalived-switching-master-slave-solution/)** 
 
 > Resources:
 <http://lib.csdn.net/article/redis/18114>

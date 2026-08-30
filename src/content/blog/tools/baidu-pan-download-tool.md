@@ -143,8 +143,8 @@ Total: 9.98MB, File Count: 1, Directory Count: 0
 ```
 
 下面配图两张: 下载速度刚开始还不错，时间长了百度云也限速[摊手~] 
-![baidupan](../../../../../screenshots/baidupcs.jpg)
-![baidupan-1](../../../../../screenshots/baidupcs-1.jpg)
+![baidupan](/screenshots/baidupcs.jpg)
+![baidupan-1](/screenshots/baidupcs-1.jpg)
 
 另外还有一个问题没解决，就是在下载单个大文件(size>2G)时会报磁盘空间不足，后面会试着看看能不能解决，下载大文件速度是个问题。
 [在32位Linux平台上无法下载大文件 #201](https://github.com/GangZhuo/BaiduPCS/issues/201)

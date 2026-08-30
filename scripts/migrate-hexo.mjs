@@ -66,10 +66,17 @@ function extractExcerpt(content) {
 }
 
 function normalizeAssetPaths(content) {
-  // Hexo 时代的 ](/../../../ref/x.gif) —— 浏览器解析为站点根，这里显式归一化
+  // Hexo 时代的 ](/../../../ref/x.gif) 与 ](../../screenshots/x.png) ——
+  // 浏览器都会解析到站点根，这里显式归一化为 /ref/、/screenshots/ 等
   return content
-    .replace(/\]\(\/(?:\.\.\/)+/g, "](/")
-    .replace(/src="\/(?:\.\.\/)+/g, 'src="');
+    .replace(/\]\((?:\/?\.\.\/)+/g, "](/")
+    .replace(/src="(?:\/?\.\.\/)+/g, 'src="')
+    .replace(/\]\(\.\//g, "](/");
+}
+
+function normalizeFenceLangs(content) {
+  // 代码块语言标签统一小写（Shiki 大小写敏感，"```SQL" 会退化为 plaintext）
+  return content.replace(/^(\s*`{3,})([A-Za-z0-9_+-]+)/gm, (_, fence, lang) => fence + lang.toLowerCase());
 }
 
 function toIsoDate(value, file) {
@@ -160,7 +167,7 @@ for (const file of files) {
     tags,
     ai: "human", // 历史文章均为纯人写
   };
-  const body = normalizeAssetPaths(content);
+  const body = normalizeFenceLangs(normalizeAssetPaths(content));
   const output = matter.stringify(body, data);
 
   fs.mkdirSync(path.dirname(destPath), { recursive: true });

@@ -124,7 +124,7 @@ git fetch 		从服务器的仓库中下载代码。	与服务器交互，从服�
 #### Git Submodule
 
 > 仓库子模块(git-submodule), 公共代码库一般都是以子仓库的模式存在和维护的。
-> 详细的介绍会在后面的文章概述->**[here](../../../../../2014/08/23/tools/git-submodule/)**
+> 详细的介绍会在后面的文章概述->**[here](/2014/08/23/tools/git-submodule/)**
 
 #### Merging vs Rebasing
 
