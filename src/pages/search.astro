@@ -1,0 +1,39 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Search" description="全站全文搜索（Pagefind，构建期索引，无外部服务）">
+  <div class="py-10 sm:py-14">
+    <h1 class="text-3xl font-bold tracking-tight">Search</h1>
+    <p class="mt-2 text-sm text-muted">构建期由 Pagefind 生成静态索引，查询全程在你的浏览器内完成。</p>
+    <div id="search" class="mt-8"></div>
+  </div>
+</BaseLayout>
+
+<link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+<script is:inline src="/pagefind/pagefind-ui.js"></script>
+<script is:inline>
+  window.addEventListener("DOMContentLoaded", function () {
+    var el = document.getElementById("search");
+    if (window.PagefindUI) {
+      new window.PagefindUI({
+        element: "#search",
+        showSubResults: true,
+        showImages: false,
+        translations: {
+          placeholder: "搜索文章…",
+          clear_search: "清除",
+          load_more: "加载更多",
+          search_label: "本站搜索",
+          zero_results: "没有找到「[SEARCH_TERM]」相关内容",
+          many_results: "找到 [COUNT] 条「[SEARCH_TERM]」相关结果",
+          one_result: "找到 [COUNT] 条「[SEARCH_TERM]」相关结果",
+          searching: "搜索中…",
+        },
+      });
+    } else {
+      el.textContent = "搜索索引在构建后生成 —— 开发模式（astro dev）下不可用，请运行 npm run build && npm run preview。";
+      el.className = "mt-8 rounded-2xl border border-dashed border-line p-8 text-center text-sm text-muted";
+    }
+  });
+</script>

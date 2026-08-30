@@ -1,0 +1,69 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { SITE } from "../data/site";
+
+const STACK = [
+  "Java", "Go", "Python", ".NET", "Vue", "React", "Linux", "Docker", "Ansible",
+  "Oracle", "SQL Server", "Redis", "Astro", "Cloudflare Workers", "Claude Code",
+];
+
+const TIMELINE = [
+  { year: "2016", text: "第一版博客上线（Hexo + even 主题），从 Oracle 与运维笔记写起。" },
+  { year: "2017", text: "搭起 Personal Wiki，把零散笔记系统化。" },
+  { year: "2020", text: "上线 Homeless.group；博客进入长草期。" },
+  { year: "2026", text: "以 Astro + Tailwind 重建博客：AI 协作写作流水线上线，应用展示墙开放。" },
+];
+---
+
+<BaseLayout title="About" description="关于 Roger Cui（itabas016）：后端与基础设施工程师，homelab 玩家，vibe coding 实践者。">
+  <div class="py-10 sm:py-14">
+    <div class="flex flex-wrap items-center gap-5">
+      <img src="/images/avatar.jpg" alt="Roger Cui 的头像" width="88" height="88" loading="lazy"
+        class="size-22 rounded-2xl border border-line object-cover" />
+      <div>
+        <h1 class="text-3xl font-bold tracking-tight">{SITE.author.name}</h1>
+        <p class="mt-1 font-mono text-sm text-faint">@{SITE.author.handle} · 济南大学 / 上海交大 · 宅 / 佛系</p>
+      </div>
+    </div>
+
+    <div class="prose mt-10 max-w-3xl">
+      <p>
+        后端与基础设施工程师，写 Java/.NET/Go/Python，也碰 Vue/React；喜欢在
+        Linux、Docker、homelab 里折腾。数据库出身（Oracle / SQL Server / Redis），
+        所以这个博客一半是救火笔记。
+      </p>
+      <blockquote>
+        <p>经验都是一点一点积攒起来的，没有人生来就会的。谨记：<strong>勿以善小而不为，勿以恶小而为之</strong>。折腾多年，发现一切皆是<strong>大道至简</strong>。</p>
+      </blockquote>
+      <p>
+        2025 年起，工作方式被 AI Agent 重写了一轮：现在我的多数小应用由
+        Claude Code 协作开发（见 <a href="/apps">Apps</a>），博客文章也由
+        Agent 按公开规范起草、我终审发布（见 <a href="/ai">AI 使用宣言</a>）。
+        这个站点本身就是这套工作流的作品。
+      </p>
+
+      <h2>时间线</h2>
+      <ul>
+        {TIMELINE.map((t) => (
+          <li><strong>{t.year}</strong> — {t.text}</li>
+        ))}
+      </ul>
+
+      <h2>技术栈</h2>
+      <p>
+        {STACK.map((s) => (
+          <span class="mr-1.5 mb-1.5 inline-block rounded-md bg-elevated px-2 py-0.5 font-mono text-xs text-muted">{s}</span>
+        ))}
+      </p>
+
+      <h2>找到我</h2>
+      <ul>
+        <li><a href={SITE.social.github} target="_blank" rel="noopener">GitHub · @{SITE.author.handle}</a></li>
+        {SITE.social.links.map((l) => (
+          <li><a href={l.href} target="_blank" rel="noopener">{l.label}</a></li>
+        ))}
+        <li><a href="/rss.xml">RSS 订阅本博客</a></li>
+      </ul>
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,40 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import FormattedDate from "../components/FormattedDate.astro";
+import AIBadge from "../components/AIBadge.astro";
+import { published, groupByYear } from "../utils/posts";
+
+const posts = published(await getCollection("blog"));
+const years = groupByYear(posts);
+---
+
+<BaseLayout title="Archive" description="全站文章时间线归档">
+  <div class="py-10 sm:py-14">
+    <h1 class="text-3xl font-bold tracking-tight">Archive</h1>
+    <p class="mt-2 text-muted">{posts.length} 篇 · 按年份倒序</p>
+
+    {
+      years.map(({ year, posts: list }) => (
+        <section class="mt-10">
+          <h2 class="font-mono text-xl font-bold text-gradient">{year}</h2>
+          <ul class="mt-4 space-y-3 border-l border-line pl-6">
+            {list.map((post) => (
+              <li class="relative">
+                <span class="absolute top-1/2 -left-[1.625rem] size-2 -translate-y-1/2 rounded-full bg-line transition-colors hover:bg-accent" aria-hidden="true"></span>
+                <div class="flex flex-wrap items-baseline gap-x-3">
+                  <a class="font-medium transition-colors hover:text-accent" href={`/blog/${post.id}/`}>
+                    {post.data.title}
+                  </a>
+                  <span class="text-xs text-faint">{post.data.category}</span>
+                  <AIBadge level={post.data.ai} />
+                </div>
+                <FormattedDate date={post.data.pubDate} class="text-xs" />
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+  </div>
+</BaseLayout>

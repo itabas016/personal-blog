@@ -1,0 +1,97 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import FormattedDate from "../../components/FormattedDate.astro";
+import AIBadge from "../../components/AIBadge.astro";
+import { published, sortedPosts, type Post } from "../../utils/posts";
+
+export async function getStaticPaths() {
+  const posts = published(await getCollection("blog"));
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+interface Props {
+  post: Post;
+}
+
+const { post } = Astro.props;
+const { title, description, category, tags, ai } = post.data;
+const { Content } = await render(post);
+
+const all = sortedPosts(published(await getCollection("blog")));
+const idx = all.findIndex((p) => p.id === post.id);
+const prev = idx > 0 ? all[idx - 1] : undefined;
+const next = idx >= 0 && idx < all.length - 1 ? all[idx + 1] : undefined;
+
+const AI_DISCLOSURE: Record<string, string> = {
+  agent: "本文由 Claude Code Agent 起草，Roger 终审后发布。",
+  "co-authored": "本文由 Roger 撰写主体，AI 协助润色与资料补充。",
+};
+---
+
+<BaseLayout title={title} description={description || `${category} 分类文章`}>
+  <article class="py-10 sm:py-14">
+    <header class="mx-auto max-w-3xl">
+      <div class="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-faint">
+        <span class="rounded-full bg-elevated px-2.5 py-1 font-medium text-muted">{category}</span>
+        <FormattedDate date={post.data.pubDate} />
+        {
+          post.data.updated && (
+            <span>
+              Updated <FormattedDate date={post.data.updated} />
+            </span>
+          )
+        }
+        <AIBadge level={ai} />
+      </div>
+      <h1 class="mt-4 text-3xl leading-tight font-bold tracking-tight sm:text-4xl">{title}</h1>
+      {description && <p class="mt-4 leading-relaxed text-muted">{description}</p>}
+      {
+        tags.length > 0 && (
+          <div class="mt-5 flex flex-wrap gap-2">
+            {tags.map((t) => (
+              <a class="rounded-full border border-line px-3 py-1 text-xs text-muted transition-colors hover:border-accent/40 hover:text-default" href={`/tags/${encodeURIComponent(t)}/`}>
+                #{t}
+              </a>
+            ))}
+          </div>
+        )
+      }
+    </header>
+
+    <div class="prose mx-auto mt-10 max-w-3xl">
+      <Content />
+    </div>
+
+    {
+      ai !== "human" && (
+        <aside class="mx-auto mt-14 max-w-3xl rounded-2xl border border-accent/25 bg-accent/5 p-5 text-sm">
+          <p class="font-medium text-accent">AI 内容披露</p>
+          <p class="mt-1.5 leading-relaxed text-muted">{AI_DISCLOSURE[ai]}</p>
+          <p class="mt-2 text-xs text-faint">
+            人机分工说明见 <a class="text-accent hover:underline" href="/ai">/ai</a> · 修订请提 Issue 或 PR
+          </p>
+        </aside>
+      )
+    }
+
+    <nav class="mx-auto mt-14 grid max-w-3xl gap-4 sm:grid-cols-2" aria-label="上一篇 / 下一篇">
+      {
+        next && (
+          <a class="group rounded-2xl border border-line bg-surface p-4 transition-colors hover:border-accent/40" href={`/blog/${next.id}/`}>
+            <p class="text-xs text-faint">← 上一篇</p>
+            <p class="mt-1.5 text-sm font-medium transition-colors group-hover:text-accent">{next.data.title}</p>
+          </a>
+        )
+      }
+      {
+        prev && (
+          <a class="group rounded-2xl border border-line bg-surface p-4 text-right transition-colors hover:border-accent/40 sm:col-start-2" href={`/blog/${prev.id}/`}>
+            <p class="text-xs text-faint">下一篇 →</p>
+            <p class="mt-1.5 text-sm font-medium transition-colors group-hover:text-accent">{prev.data.title}</p>
+          </a>
+        )
+      }
+    </nav>
+  </article>
+</BaseLayout>

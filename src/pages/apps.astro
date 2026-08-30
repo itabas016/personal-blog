@@ -1,0 +1,38 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import AppCard from "../components/AppCard.astro";
+import { apps } from "../data/apps";
+
+const order = { live: 0, wip: 1, archived: 2 } as const;
+const sorted = [...apps].sort(
+  (a, b) =>
+    order[a.status] - order[b.status] ||
+    b.addedAt.localeCompare(a.addedAt),
+);
+const liveCount = apps.filter((a) => a.status === "live").length;
+const vibeCount = apps.filter((a) => a.vibeCoded).length;
+---
+
+<BaseLayout title="Apps" description="Vibe coding 应用展示墙 —— 用 AI Agent 快速构建的小工具与产品。">
+  <div class="py-10 sm:py-14">
+    <h1 class="text-3xl font-bold tracking-tight">Apps</h1>
+    <p class="mt-3 max-w-2xl leading-relaxed text-muted">
+      随着 vibe coding 成为日常，写小应用的门槛变成了「想到」而不是「做到」。
+      这里收录我做过的应用：<span class="text-default">{liveCount}</span> 个在线、
+      其中 <span class="text-accent">{vibeCount}</span> 个由 AI Agent 协作开发。
+      数据源在 <code class="rounded bg-elevated px-1.5 py-0.5 font-mono text-xs">src/data/apps.ts</code>，加一行即上新。
+    </p>
+
+    <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {sorted.map((app) => <AppCard app={app} />)}
+    </div>
+
+    {
+      apps.length === 0 && (
+        <p class="mt-10 rounded-2xl border border-dashed border-line p-10 text-center text-muted">
+          还没有收录应用 —— 编辑 src/data/apps.ts 添加第一个。
+        </p>
+      )
+    }
+  </div>
+</BaseLayout>

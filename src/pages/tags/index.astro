@@ -1,0 +1,29 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { published, getAllTags } from "../../utils/posts";
+
+const posts = published(await getCollection("blog"));
+const tags = getAllTags(posts);
+const max = Math.max(...tags.map((t) => t.count), 1);
+---
+
+<BaseLayout title="Tags" description="全站标签索引">
+  <div class="py-10 sm:py-14">
+    <h1 class="text-3xl font-bold tracking-tight">Tags</h1>
+    <p class="mt-2 text-muted">{tags.length} 个标签</p>
+    <div class="mt-8 flex flex-wrap items-baseline gap-x-5 gap-y-3">
+      {
+        tags.map(({ tag, count }) => (
+          <a
+            href={`/tags/${encodeURIComponent(tag)}/`}
+            class="text-muted transition-colors hover:text-accent"
+            style={`font-size: ${0.9 + (count / max) * 0.9}rem`}
+          >
+            #{tag} <span class="text-sm text-faint">{count}</span>
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</BaseLayout>

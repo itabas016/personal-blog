@@ -1,0 +1,29 @@
+---
+interface Props {
+  level: "human" | "co-authored" | "agent";
+  class?: string;
+}
+
+const { level, class: className = "" } = Astro.props;
+
+const META: Record<"co-authored" | "agent", { label: string; tip: string }> = {
+  "co-authored": { label: "✦ AI co-authored", tip: "人写主体，AI 协助润色与补充" },
+  agent: { label: "🤖 Agent written", tip: "Claude Code Agent 起草，人工审核后发布" },
+};
+
+const meta = level === "human" ? null : META[level];
+---
+
+{
+  meta && (
+    <span
+      class:list={[
+        "inline-flex cursor-help items-center rounded-full border border-accent/30 bg-accent/10 px-2 py-0.5 text-[11px] font-medium text-accent transition-colors hover:bg-accent/20",
+        className,
+      ]}
+      title={meta.tip}
+    >
+      {meta.label}
+    </span>
+  )
+}

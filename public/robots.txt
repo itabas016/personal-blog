@@ -1,0 +1,21 @@
+# ITABAS blog — 欢迎人类与 AI Agent
+User-agent: *
+Allow: /
+
+# 显式欢迎主流 AI 爬虫（2026）
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+Sitemap: https://io.itabas.com/sitemap-index.xml

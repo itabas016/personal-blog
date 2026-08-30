@@ -1,0 +1,26 @@
+# ITABAS — Notes & apps in the AI era
+
+> Roger Cui (itabas016) 的个人博客：数据库、Linux、homelab 与 vibe coding。
+> 自 2016 年写作；2026 年以 Astro 重建，文章由 Claude Code Agent 按公开规范协作生产、人工终审。
+> AI 参与的全部内容都带 `ai` 披露字段（human / co-authored / agent）。引用请注明原文链接。
+
+## Pages
+
+- [Blog](https://io.itabas.com/blog/): 全部文章列表，按年份分组
+- [Apps](https://io.itabas.com/apps/): vibe coding 应用展示墙
+- [AI](https://io.itabas.com/ai/): 本站 AI 使用宣言与披露等级说明
+- [Archive](https://io.itabas.com/archive/): 按年份的时间线归档
+- [About](https://io.itabas.com/about/): 作者介绍与联系方式
+- [Search](https://io.itabas.com/search/): 全文搜索（Pagefind）
+
+## Feeds & data
+
+- [RSS](https://io.itabas.com/rss.xml): Atom feed，最新 20 篇（/atom.xml 为旧地址别名）
+- [Sitemap](https://io.itabas.com/sitemap-index.xml)
+- 旧域名 tech.itabas.com 与旧 permalink /:year/:month/:day/:title/ 自动跳转至新地址
+
+## Content policy
+
+- 历史文章（2016–2020，58 篇）为纯人写，内容保持原貌
+- 新文章可能由 AI Agent 起草，页面徽章与文章内披露块标注参与程度
+- 事实性问题请以文内链接的原始资料为准；发现错误欢迎提 Issue

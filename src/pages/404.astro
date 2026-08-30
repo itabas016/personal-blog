@@ -1,0 +1,32 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="404" description="页面不存在">
+  <div class="py-24 text-center sm:py-32">
+    <p class="font-mono text-7xl font-bold text-gradient sm:text-8xl">404</p>
+    <h1 class="mt-6 text-xl font-semibold tracking-tight">这个页面不在新站里</h1>
+    <p class="mx-auto mt-3 max-w-md leading-relaxed text-muted">
+      如果你来自旧博客的 <code class="rounded bg-elevated px-1.5 py-0.5 font-mono text-xs">/年/月/日/标题/</code> 链接，
+      正在为你跳转到新地址…
+    </p>
+    <div class="mt-8 flex justify-center gap-3 text-sm">
+      <a href="/" class="rounded-full bg-accent px-5 py-2.5 font-medium text-white transition-colors hover:bg-violet-500">回首页</a>
+      <a href="/search" class="rounded-full border border-line px-5 py-2.5 font-medium text-muted transition-colors hover:text-default">搜索一下</a>
+    </div>
+  </div>
+</BaseLayout>
+
+<script is:inline>
+  // 兼容旧 Hexo permalink：/:year/:month/:day/:title/ → /blog/:title/
+  (function () {
+    var m = location.pathname.match(/^\/(\d{4})\/(\d{2})\/(\d{2})\/(.+?)\/?$/);
+    if (m) {
+      location.replace("/blog/" + m[4] + "/");
+      return;
+    }
+    if (location.pathname.indexOf("/archives") === 0) {
+      location.replace("/archive/");
+    }
+  })();
+</script>

@@ -1,0 +1,53 @@
+---
+interface Props {
+  postCount: number;
+  appCount: number;
+}
+const { postCount, appCount } = Astro.props;
+---
+
+<section class="relative overflow-hidden">
+  <div class="bg-grid pointer-events-none absolute inset-0 -z-10" aria-hidden="true"></div>
+  <div class="pointer-events-none absolute -top-32 left-1/2 -z-10 h-72 w-[42rem] -translate-x-1/2 rounded-full bg-accent/15 blur-3xl" aria-hidden="true"></div>
+
+  <div class="grid items-center gap-10 py-16 sm:py-24 lg:grid-cols-[1.1fr_1fr]">
+    <div class="animate-rise">
+      <p class="font-mono text-xs tracking-widest text-faint uppercase">Est. 2016 · Rebuilt for the AI era</p>
+      <h1 class="mt-4 text-4xl leading-tight font-bold tracking-tight sm:text-5xl">
+        写代码，也写文字。
+        <span class="text-gradient">与 AI 同行。</span>
+      </h1>
+      <p class="mt-5 max-w-xl leading-relaxed text-muted">
+        这里是 Roger（itabas016）的个人博客：数据库、Linux、homelab 与
+        vibe coding 的长期笔记。2026 年起，内容由 Claude Code
+        Agent 协作生产、人工终审，<a class="text-accent underline decoration-accent/40 underline-offset-4 hover:decoration-accent" href="/ai">人机分工全部公开</a>。
+      </p>
+      <div class="mt-7 flex flex-wrap items-center gap-3">
+        <a href="/blog" class="rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-white shadow-lg shadow-accent/25 transition-all hover:bg-violet-500 hover:shadow-accent/40">阅读博客</a>
+        <a href="/apps" class="rounded-full border border-line bg-surface px-5 py-2.5 text-sm font-medium text-muted transition-colors hover:border-accent/40 hover:text-default">应用展示墙</a>
+      </div>
+      <p class="mt-7 font-mono text-xs text-faint">
+        {postCount} posts · {appCount} apps · powered by Astro + Claude Code
+      </p>
+    </div>
+
+    <div class="animate-rise [animation-delay:120ms]">
+      <div class="overflow-hidden rounded-2xl border border-line bg-surface shadow-2xl shadow-black/10">
+        <div class="flex items-center gap-1.5 border-b border-line bg-elevated px-4 py-3" aria-hidden="true">
+          <span class="size-3 rounded-full bg-rose-400/80"></span>
+          <span class="size-3 rounded-full bg-amber-400/80"></span>
+          <span class="size-3 rounded-full bg-emerald-400/80"></span>
+          <span class="ml-3 font-mono text-xs text-faint">claude — personal-blog</span>
+        </div>
+        <div class="space-y-2 p-5 font-mono text-[13px] leading-relaxed" aria-label="示意：Agent 协作写作流程">
+          <p class="text-faint"><span class="text-accent">$</span> claude</p>
+          <p><span class="text-accent-2">&gt;</span> <span class="text-muted">基于今天的重构经历，写一篇博客</span></p>
+          <p class="text-emerald-400">✓ frontmatter 契约校验通过</p>
+          <p class="text-emerald-400">✓ npm run build 通过 · 62 pages</p>
+          <p class="text-emerald-400">✓ ai: <span class="text-accent">"co-authored"</span> 已披露</p>
+          <p class="text-muted">→ 已提交 PR，等待 Roger 终审<span class="ml-0.5 inline-block h-4 w-2 translate-y-0.5 animate-blink bg-accent"></span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

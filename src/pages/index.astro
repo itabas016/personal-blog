@@ -1,0 +1,53 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Hero from "../components/Hero.astro";
+import PostCard from "../components/PostCard.astro";
+import AppCard from "../components/AppCard.astro";
+import { published, sortedPosts } from "../utils/posts";
+import { apps } from "../data/apps";
+
+const allPosts = published(await getCollection("blog"));
+const latestPosts = sortedPosts(allPosts).slice(0, 5);
+const liveApps = apps.filter((a) => a.status === "live");
+const featuredApps = (liveApps.length >= 3 ? liveApps : [...liveApps, ...apps.filter((a) => a.status !== "live")]).slice(0, 3);
+---
+
+<BaseLayout>
+  <Hero postCount={allPosts.length} appCount={apps.length} />
+
+  <section class="py-6 sm:py-10">
+    <div class="flex items-baseline justify-between">
+      <h2 class="text-xl font-semibold tracking-tight">Latest Posts</h2>
+      <a href="/blog" class="text-sm text-muted transition-colors hover:text-accent">All posts →</a>
+    </div>
+    <div class="mt-5 grid gap-4">
+      {latestPosts.map((post) => <PostCard post={post} />)}
+    </div>
+  </section>
+
+  <section class="py-6 sm:py-10">
+    <div class="flex items-baseline justify-between">
+      <h2 class="text-xl font-semibold tracking-tight">Vibe Coding Apps</h2>
+      <a href="/apps" class="text-sm text-muted transition-colors hover:text-accent">All apps →</a>
+    </div>
+    <div class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {featuredApps.map((app) => <AppCard app={app} />)}
+    </div>
+  </section>
+
+  <section class="py-6 pb-10 sm:py-10">
+    <div class="rounded-2xl border border-line bg-surface p-6 sm:p-8">
+      <h2 class="text-lg font-semibold tracking-tight">这个博客怎么来的？</h2>
+      <p class="mt-2 max-w-2xl text-sm leading-relaxed text-muted">
+        2016 年用 Hexo 搭起第一版；2026 年以 Astro + Tailwind 重建，
+        文章由 Claude Code Agent 按公开规范起草、人工终审发布。
+        设计文档、迁移方案与 AI 写作规范全部开源在本仓库。
+      </p>
+      <div class="mt-4 flex flex-wrap gap-3 text-sm">
+        <a class="text-accent hover:underline" href="/ai">AI 使用宣言 →</a>
+        <a class="text-accent hover:underline" href="/about">关于我 →</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
