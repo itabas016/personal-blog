@@ -90,7 +90,7 @@
 | AIBadge | `🤖 Agent` / `✦ Co-authored` 两种，胶囊形，渐变描边，hover 有 tooltip 说明 |
 | AppCard | 渐变图标块 + 应用名 + 一句话 + 技术栈 chips + 状态点（Live 绿 / WIP 黄 / Archived 灰）+ 链接 |
 | Hero | 左侧标题与陈述文案，右侧终端卡片（打字机效果展示 `claude` 会话），支持 `prefers-reduced-motion` 降级 |
-| Footer | 三栏：签名 / 导航 / RSS·GitHub·llms.txt；底部署名「Human reviewed, AI assisted」 |
+| Footer | 三栏：签名 / 导航 / RSS·llms.txt；底部独立社交栏（Facebook · X · Instagram · Weibo · GitHub）；署名「Human reviewed, AI assisted」 |
 
 ### 4.5 动效
 
@@ -135,8 +135,9 @@ interface App {
 }
 ```
 
+- 展示形态（2026-08 更新）：**三轨横向跑马灯**——三条轨道 round-robin 分发应用卡片，中轨反向滚动、悬停暂停、两端渐隐 mask，`prefers-reduced-motion` 时退化为静态折行；卡片 hover 泛起主色微光。
 - 排序：Live 优先，再按 addedAt 倒序；`vibeCoded` 应用带小徽章呼应 AI 主题。
-- 首页含「Featured Apps」速览（取前 3 个 live 应用），引流到 `/apps`。
+- 首页含「Vibe Coding Apps」速览（取前 3 个 live 应用），引流到 `/apps`。
 
 ## 7. 迁移策略（G6）
 

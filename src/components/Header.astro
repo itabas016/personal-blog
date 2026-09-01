@@ -12,7 +12,7 @@ const isActive = (href: string) => path === href || path.startsWith(href + "/");
       <span class="hidden rounded-full border border-line px-2 py-0.5 text-[10px] font-medium text-faint sm:inline">v2</span>
     </a>
 
-    <nav class="flex items-center gap-1 text-sm" aria-label="主导航">
+    <nav class="flex items-center gap-1 overflow-x-auto text-sm [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label="主导航">
       {
         SITE.nav.map((item) => (
           <a

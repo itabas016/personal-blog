@@ -1,0 +1,4 @@
+[     601ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_RESET @ https://static.cloudflareinsights.com/beacon.min.js/v3d52b47920f24c319d37e2661827c42b1787588026925:0
+[    1393ms] [INFO] Slow network is detected. See https://www.chromestatus.com/feature/5636954674692096 for more details. Fallback font will be used while loading: https://use.fontawesome.com/releases/v5.0.13/webfonts/fa-solid-900.woff2 @ https://www.homeless.group/:0
+[    1393ms] [INFO] Slow network is detected. See https://www.chromestatus.com/feature/5636954674692096 for more details. Fallback font will be used while loading: https://use.fontawesome.com/releases/v5.0.13/webfonts/fa-brands-400.woff2 @ https://www.homeless.group/:0
+[    9377ms] [LOG] Content is cached for offline use. @ https://www.homeless.group/static/js/main.8e86c523.chunk.js:0

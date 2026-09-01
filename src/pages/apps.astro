@@ -11,28 +11,90 @@ const sorted = [...apps].sort(
 );
 const liveCount = apps.filter((a) => a.status === "live").length;
 const vibeCount = apps.filter((a) => a.vibeCoded).length;
+
+// 三条跑马灯轨道，round-robin 分配；中轨反向
+const rows: (typeof sorted)[] = [0, 1, 2].map((r) => sorted.filter((_, i) => i % 3 === r));
+const DURATIONS = ["52s", "64s", "58s"];
 ---
 
-<BaseLayout title="Apps" description="Vibe coding 应用展示墙 —— 用 AI Agent 快速构建的小工具与产品。">
+<BaseLayout title="Apps" description="Vibe coding 应用展示墙 —— 用 AI Agent 快速构建的小工具与产品，多数托管在 Cloudflare 上。">
   <div class="py-10 sm:py-14">
-    <h1 class="text-3xl font-bold tracking-tight">Apps</h1>
-    <p class="mt-3 max-w-2xl leading-relaxed text-muted">
-      随着 vibe coding 成为日常，写小应用的门槛变成了「想到」而不是「做到」。
-      这里收录我做过的应用：<span class="text-default">{liveCount}</span> 个在线、
-      其中 <span class="text-accent">{vibeCount}</span> 个由 AI Agent 协作开发。
-      数据源在 <code class="rounded bg-elevated px-1.5 py-0.5 font-mono text-xs">src/data/apps.ts</code>，加一行即上新。
-    </p>
-
-    <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {sorted.map((app) => <AppCard app={app} />)}
+    <div class="relative">
+      <div class="pointer-events-none absolute -top-20 left-1/2 -z-10 h-64 w-[36rem] -translate-x-1/2 rounded-full bg-accent/15 blur-3xl" aria-hidden="true"></div>
+      <p class="font-mono text-xs tracking-widest text-faint uppercase">Vibe Coding Gallery</p>
+      <h1 class="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
+        <span class="text-gradient">Apps</span> —— 想到，就做到。
+      </h1>
+      <p class="mt-3 max-w-2xl leading-relaxed text-muted">
+        vibe coding 把写小应用的门槛从「做到」降到了「想到」。
+        这里滚动着 <span class="text-default">{apps.length}</span> 个应用：
+        <span class="text-default">{liveCount}</span> 个在线、
+        <span class="text-accent">{vibeCount}</span> 个由 AI Agent 协作开发，大多托管在
+        Cloudflare 上。悬停可暂停滚动。
+      </p>
     </div>
 
-    {
-      apps.length === 0 && (
-        <p class="mt-10 rounded-2xl border border-dashed border-line p-10 text-center text-muted">
-          还没有收录应用 —— 编辑 src/data/apps.ts 添加第一个。
-        </p>
-      )
-    }
+    <div class="mt-12 space-y-6">
+      {
+        rows.map((row, r) => (
+          <div class="apps-marquee">
+            <div class:list={["apps-track", r === 1 && "reverse"]} style={`--dur: ${DURATIONS[r]}`}>
+              {[0, 1].map((half) => (
+                <div class="apps-half" aria-hidden={half === 1 ? "true" : undefined}>
+                  {row.map((app) => (
+                    <AppCard app={app} class="w-[21rem] shrink-0" />
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+
+    <p class="mt-10 text-sm text-faint">
+      应用数据维护在
+      <code class="rounded bg-elevated px-1.5 py-0.5 font-mono text-xs">src/data/apps.ts</code>
+      · 加一条记录即上新 · 想了解某个应用的实现细节，来
+      <a class="text-accent hover:underline" href="https://github.com/itabas016" target="_blank" rel="noopener">GitHub</a>
+      找我聊。
+    </p>
   </div>
 </BaseLayout>
+
+<style is:global>
+  .apps-marquee {
+    overflow: hidden;
+    /* 两端渐隐，营造「无限流」观感 */
+    -webkit-mask-image: linear-gradient(to right, transparent, black 7%, black 93%, transparent);
+    mask-image: linear-gradient(to right, transparent, black 7%, black 93%, transparent);
+  }
+  .apps-track {
+    display: flex;
+    width: max-content;
+    animation: apps-scroll var(--dur, 56s) linear infinite;
+  }
+  .apps-track.reverse {
+    animation-direction: reverse;
+  }
+  .apps-half {
+    display: flex;
+    gap: 1rem;
+    padding-right: 1rem;
+  }
+  .apps-marquee:hover .apps-track {
+    animation-play-state: paused;
+  }
+  @keyframes apps-scroll {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .apps-track {
+      animation: none;
+      flex-wrap: wrap;
+      width: auto;
+    }
+  }
+</style>

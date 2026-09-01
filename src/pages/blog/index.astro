@@ -2,30 +2,19 @@
 import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PostCard from "../../components/PostCard.astro";
-import { published, sortedPosts, getAllTags, groupByYear } from "../../utils/posts";
+import { published, sortedPosts, groupByYear } from "../../utils/posts";
 
 const posts = sortedPosts(published(await getCollection("blog")));
-const tags = getAllTags(posts);
 const years = groupByYear(posts);
 ---
 
 <BaseLayout title="Blog" description="全部文章：数据库、Linux、homelab、工具与 AI 时代的构建笔记。">
   <div class="py-10 sm:py-14">
     <h1 class="text-3xl font-bold tracking-tight">Blog</h1>
-    <p class="mt-2 text-muted">{posts.length} 篇文章 · 自 2016 年沉淀至今</p>
-
-    <div class="mt-6 flex flex-wrap gap-2">
-      {
-        tags.map(({ tag, count }) => (
-          <a
-            href={`/tags/${encodeURIComponent(tag)}/`}
-            class="rounded-full border border-line bg-surface px-3 py-1 text-xs text-muted transition-colors hover:border-accent/40 hover:text-default"
-          >
-            #{tag} <span class="text-faint">{count}</span>
-          </a>
-        ))
-      }
-    </div>
+    <p class="mt-2 text-muted">
+      {posts.length} 篇文章 · 自 2016 年沉淀至今 ·
+      <a href="/tags" class="text-accent hover:underline">按标签浏览</a>
+    </p>
 
     {
       years.map(({ year, posts: list }) => (

@@ -1,10 +1,18 @@
 ---
 import { SITE } from "../data/site";
 const year = new Date().getFullYear();
+
+const socialLinks = [
+  { label: "Facebook", href: SITE.social.facebook },
+  { label: "X", href: SITE.social.x },
+  { label: "Instagram", href: SITE.social.instagram },
+  { label: "Weibo", href: SITE.social.weibo },
+  { label: "GitHub", href: SITE.social.github },
+];
 ---
 
 <footer class="mt-20 border-t border-line/60">
-  <div class="mx-auto grid max-w-5xl gap-10 px-5 py-12 pb-16 text-sm sm:grid-cols-3 sm:px-8">
+  <div class="mx-auto grid max-w-5xl gap-10 px-5 py-12 sm:grid-cols-3 sm:px-8">
     <div>
       <p class="font-mono font-bold">ITABAS</p>
       <p class="mt-2 leading-relaxed text-muted">
@@ -17,9 +25,20 @@ const year = new Date().getFullYear();
       <a class="text-muted transition-colors hover:text-default" href="/search">Search</a>
     </nav>
     <div class="flex flex-col gap-2">
-      <a class="text-muted transition-colors hover:text-default" href={SITE.social.github} target="_blank" rel="noopener">GitHub ↗</a>
       <a class="text-muted transition-colors hover:text-default" href="/rss.xml">RSS</a>
       <a class="text-muted transition-colors hover:text-default" href="/llms.txt">llms.txt <span class="text-faint">(for AI agents)</span></a>
+      {SITE.social.links.map((l) => <a class="text-muted transition-colors hover:text-default" href={l.href} target="_blank" rel="noopener">{l.label} ↗</a>)}
+    </div>
+  </div>
+  <div class="border-t border-line/60">
+    <div class="mx-auto flex max-w-5xl flex-wrap items-center justify-center gap-x-6 gap-y-2 px-5 py-4 text-sm sm:px-8">
+      {
+        socialLinks.map((s) => (
+          <a class="inline-flex items-center gap-1.5 text-muted transition-colors hover:text-accent" href={s.href} target="_blank" rel="noopener noopener-noreferrer" aria-label={s.label}>
+            {s.label} <span class="text-[10px] text-faint">↗</span>
+          </a>
+        ))
+      }
     </div>
   </div>
 </footer>

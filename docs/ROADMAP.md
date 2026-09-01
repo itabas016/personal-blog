@@ -18,7 +18,7 @@
 ## Phase 2 · 内容与打磨（2026-09）
 
 - [ ] **Agent 写作试运行**：按 `AGENTS.md` 流程由 Claude Code 发布 2-3 篇新文章（如《2026 年用 Astro 重构个人博客》《我的 vibe coding 工具箱》）
-- [ ] `src/data/apps.ts` 录入真实应用清单（替换示例数据）
+- [x] `src/data/apps.ts` 录入真实应用清单（universe-modeling / equity-research / reading-challenge / polymarket-monitor / immersive-reading / family-tree / willfit / rune，tagline 与链接待 owner 修订）
 - [ ] 文章详情页 TOC（目录）+ 阅读进度条
 - [ ] 代码块复制按钮
 - [ ] Open Graph 图自动生成（`@vercel/og` 思路的构建期 Satori 实现，文章分享卡片）

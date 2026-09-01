@@ -10,6 +10,7 @@ export const SITE = {
   author: { name: "Roger Cui", handle: "itabas016" },
   nav: [
     { href: "/blog", label: "Blog" },
+    { href: "/tags", label: "Tags" },
     { href: "/apps", label: "Apps" },
     { href: "/ai", label: "AI" },
     { href: "/archive", label: "Archive" },
@@ -17,6 +18,11 @@ export const SITE = {
   ],
   social: {
     github: "https://github.com/itabas016",
+    // TODO(Roger): 以下 handle 为占位，替换为各平台的真实主页地址
+    facebook: "https://facebook.com/itabas016",
+    x: "https://x.com/itabas016",
+    instagram: "https://instagram.com/itabas016",
+    weibo: "https://weibo.com/itabas016",
     rss: "/rss.xml",
     links: [
       { label: "Homeless.group", href: "https://www.homeless.group" },

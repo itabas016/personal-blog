@@ -8,10 +8,16 @@ const STACK = [
 ];
 
 const TIMELINE = [
-  { year: "2016", text: "第一版博客上线（Hexo + even 主题），从 Oracle 与运维笔记写起。" },
-  { year: "2017", text: "搭起 Personal Wiki，把零散笔记系统化。" },
-  { year: "2020", text: "上线 Homeless.group；博客进入长草期。" },
   { year: "2026", text: "以 Astro + Tailwind 重建博客：AI 协作写作流水线上线，应用展示墙开放。" },
+  { year: "2020", text: "上线 Homeless.group；博客进入长草期。" },
+  { year: "2017", text: "搭起 Personal Wiki，把零散笔记系统化。" },
+  { year: "2016", text: "第一版博客上线（Hexo + even 主题），从 Oracle 与运维笔记写起。" },
+];
+
+const HOBBIES = [
+  { emoji: "🚴", label: "骑行 Cycling" },
+  { emoji: "🏸", label: "羽毛球 Badminton" },
+  { emoji: "⛰️", label: "爬山 Hiking" },
 ];
 ---
 
@@ -23,6 +29,16 @@ const TIMELINE = [
       <div>
         <h1 class="text-3xl font-bold tracking-tight">{SITE.author.name}</h1>
         <p class="mt-1 font-mono text-sm text-faint">@{SITE.author.handle} · 济南大学 / 上海交大 · 宅 / 佛系</p>
+        <div class="mt-3 flex flex-wrap gap-2">
+          {
+            HOBBIES.map((h) => (
+              <span class="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1 text-xs text-muted">
+                <span aria-hidden="true">{h.emoji}</span>
+                {h.label}
+              </span>
+            ))
+          }
+        </div>
       </div>
     </div>
 

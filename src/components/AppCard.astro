@@ -3,9 +3,10 @@ import type { App } from "../data/apps";
 
 interface Props {
   app: App;
+  class?: string;
 }
 
-const { app } = Astro.props;
+const { app, class: className = "" } = Astro.props;
 
 const GRADIENTS: Record<string, string> = {
   violet: "from-violet-500/80 to-violet-700/80",
@@ -24,7 +25,7 @@ const STATUS: Record<App["status"], { label: string; dot: string }> = {
 const status = STATUS[app.status];
 ---
 
-<article class="flex flex-col rounded-2xl border border-line bg-surface p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-[0_8px_30px_-12px] hover:shadow-accent/25">
+<article class:list={["flex flex-col rounded-2xl border border-line bg-surface p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-[0_8px_30px_-12px] hover:shadow-accent/25", className]}>
   <div class="flex items-start justify-between gap-3">
     <div class={`flex size-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${gradient} text-2xl shadow-inner`} aria-hidden="true">
       {app.emoji}
