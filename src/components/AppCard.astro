@@ -1,5 +1,5 @@
 ---
-import type { App } from "../data/apps";
+import { APP_GRADIENTS, type App } from "../data/apps";
 
 interface Props {
   app: App;
@@ -8,14 +8,7 @@ interface Props {
 
 const { app, class: className = "" } = Astro.props;
 
-const GRADIENTS: Record<string, string> = {
-  violet: "from-violet-500/80 to-violet-700/80",
-  cyan: "from-cyan-400/80 to-sky-600/80",
-  sunset: "from-orange-400/80 to-rose-500/80",
-  emerald: "from-emerald-400/80 to-teal-600/80",
-  slate: "from-slate-400/70 to-slate-600/80",
-};
-const gradient = GRADIENTS[app.gradient] ?? GRADIENTS.violet;
+const gradient = APP_GRADIENTS[app.gradient] ?? APP_GRADIENTS.violet;
 
 const STATUS: Record<App["status"], { label: string; dot: string }> = {
   live: { label: "Live", dot: "bg-emerald-400" },

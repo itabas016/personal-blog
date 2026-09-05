@@ -5,14 +5,34 @@
  * 链接说明：所有 links.live 均已于 2026-08-31 实测可达
  * （polymarket-monitor 例外，见下）；GitHub 仓库均为私有仓，故不放 repo 链接。
  */
+
+/** 按用途分类（访客视角），技术栈作为卡片 tag 呈现，不参与分类 */
+export const CATEGORIES = [
+  { id: "experiments", label: "实验", emoji: "🧪" },
+  { id: "data", label: "数据", emoji: "📈" },
+  { id: "reading", label: "阅读", emoji: "📚" },
+  { id: "life", label: "生活", emoji: "🏃" },
+  { id: "tools", label: "工具", emoji: "🛠" },
+] as const;
+
+export type CategoryId = (typeof CATEGORIES)[number]["id"];
+
 export interface App {
   name: string;
   tagline: string;
   emoji: string;
-  /** 渐变色对，取值见 AppCard.astro 的 GRADIENTS */
+  /** 渐变色对，取值见 APP_GRADIENTS */
   gradient: string;
   stack: string[];
   status: "live" | "wip" | "archived";
+  /** 用途分类；缺省 = 未分类，仍在「全部」中显示 */
+  category?: CategoryId;
+  /** 精选位：进 /apps 顶部大卡区与首页速览 */
+  featured?: boolean;
+  /** 应用截图（16:10），放 public/images/apps/<slug>/cover.png；缺省用渐变块兜底 */
+  cover?: string;
+  /** 关联博客文章 slug，用于「实现笔记」互链 */
+  posts?: string[];
   links?: { live?: string; repo?: string };
   /** 是否 AI 协作（vibe coding）开发 */
   vibeCoded: boolean;
@@ -20,6 +40,15 @@ export interface App {
   model?: string;
   addedAt: string; // YYYY-MM
 }
+
+/** 渐变色对 → Tailwind 类，AppCard 与精选大卡共用 */
+export const APP_GRADIENTS: Record<string, string> = {
+  violet: "from-violet-500/80 to-violet-700/80",
+  cyan: "from-cyan-400/80 to-sky-600/80",
+  sunset: "from-orange-400/80 to-rose-500/80",
+  emerald: "from-emerald-400/80 to-teal-600/80",
+  slate: "from-slate-400/70 to-slate-600/80",
+};
 
 export const apps: App[] = [
   {
@@ -29,6 +58,8 @@ export const apps: App[] = [
     gradient: "violet",
     stack: ["Vite", "Cloudflare Workers"],
     status: "live",
+    category: "experiments",
+    featured: true,
     links: { live: "https://universe.itabas.com" },
     vibeCoded: true,
     model: "Claude Code",
@@ -41,6 +72,7 @@ export const apps: App[] = [
     gradient: "cyan",
     stack: ["Cloudflare Pages"],
     status: "live",
+    category: "data",
     links: { live: "https://equity-research.pages.dev" },
     vibeCoded: true,
     model: "Claude Code",
@@ -53,6 +85,7 @@ export const apps: App[] = [
     gradient: "emerald",
     stack: ["Astro", "Cloudflare Pages"],
     status: "live",
+    category: "reading",
     links: { live: "https://reading-challenge.pages.dev" },
     vibeCoded: true,
     model: "Claude Code",
@@ -67,6 +100,7 @@ export const apps: App[] = [
     gradient: "sunset",
     stack: ["Cloudflare Pages"],
     status: "live",
+    category: "data",
     links: { live: "https://polymarket-monitor.pages.dev" },
     vibeCoded: true,
     model: "Claude Code",
@@ -79,6 +113,8 @@ export const apps: App[] = [
     gradient: "cyan",
     stack: ["SvelteKit", "Cloudflare Workers", "R2"],
     status: "live",
+    category: "reading",
+    featured: true,
     links: { live: "https://immersive-reading.itabas.com" },
     vibeCoded: true,
     model: "Claude Code",
@@ -91,6 +127,7 @@ export const apps: App[] = [
     gradient: "emerald",
     stack: ["Next.js", "Cloudflare Workers", "R2"],
     status: "live",
+    category: "life",
     links: { live: "https://family-tree.pages.dev" },
     vibeCoded: true,
     model: "Claude Code",
@@ -103,6 +140,7 @@ export const apps: App[] = [
     gradient: "sunset",
     stack: ["Next.js", "Cloudflare Workers"],
     status: "live",
+    category: "life",
     links: { live: "https://willfit.itabas.com" },
     vibeCoded: true,
     model: "Claude Code",
@@ -115,6 +153,8 @@ export const apps: App[] = [
     gradient: "emerald",
     stack: ["Cloudflare Workers"],
     status: "live",
+    category: "life",
+    featured: true,
     links: { live: "https://bdm.itabas.com" },
     vibeCoded: true,
     model: "Claude Code",
@@ -128,6 +168,7 @@ export const apps: App[] = [
     gradient: "violet",
     stack: ["Rust", "CLI"],
     status: "wip",
+    category: "tools",
     vibeCoded: true,
     model: "Claude Code",
     addedAt: "2026-08",
