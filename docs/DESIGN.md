@@ -139,7 +139,7 @@ interface App {
 }
 ```
 
-- 展示形态（2026-09 更新）：**分类目录页**——眼球与效率分工，首页速览引流，`/apps` 负责浏览与转化。页面结构：Hero（标题 + tabular-nums 数字条）→ Featured 精选大卡区（`featured` 标记，3+2+通栏不对称布局）→ 分类筛选 pills（按用途：实验/数据/阅读/生活/工具，vanilla JS 渐进增强，筛选态同步 `?c=` 到 URL）→ 应用网格 → 早期作品时间线（archived 不进网格）。
+- 展示形态（2026-09 更新）：**分类目录页**——眼球与效率分工，首页速览引流，`/apps` 负责浏览与转化。页面结构：Hero（标题 + tabular-nums 数字条）→ Featured 精选索引（`featured` 标记，排印式大字行，靠字号与留白建立层级、不用装饰图；`cover` 就绪后行右侧接截图缩略图）→ 分类筛选 pills（按用途：实验/数据/阅读/生活/工具，vanilla JS 渐进增强，筛选态同步 `?c=` 到 URL）→ 应用网格 → 早期作品时间线（archived 不进网格）。
 - 分类原则：按用途（访客视角）分类，技术栈是卡片 tag 不参与分类；`category` 为可选字段，漏填的应用落「未分类」照常展示，加应用永不被 schema 卡住。
 - 交互：筛选时 Featured 区隐藏、被筛中的精选应用回网格；pill 用 `aria-pressed` 驱动选中态；网格重排 200ms 淡入上移 stagger 40ms，`prefers-reduced-motion` 时关闭；无 JS 时 pills 隐藏、精选 + 全量网格照常可读。
 - 排序：网格 Live 优先再按 addedAt 倒序；时间线按 addedAt 倒序；`vibeCoded` 应用带 ✦ 徽章呼应 AI 主题。
