@@ -29,3 +29,5 @@ migration-report.json
 
 # security scan tool state (mimosa)
 .mimosa/
+# browser automation artifacts
+.playwright-mcp/
