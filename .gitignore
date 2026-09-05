@@ -26,3 +26,6 @@ Thumbs.db
 
 # migration working files
 migration-report.json
+
+# security scan tool state (mimosa)
+.mimosa/
