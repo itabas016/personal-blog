@@ -10,7 +10,11 @@ import { apps } from "../data/apps";
 const allPosts = published(await getCollection("blog"));
 const latestPosts = sortedPosts(allPosts).slice(0, 5);
 const liveApps = apps.filter((a) => a.status === "live");
-const featuredApps = (liveApps.length >= 3 ? liveApps : [...liveApps, ...apps.filter((a) => a.status !== "live")]).slice(0, 3);
+// 首页速览优先展示 /apps 精选位（featured），不足三个用其余在线应用补齐
+const featuredApps = [
+  ...liveApps.filter((a) => a.featured),
+  ...liveApps.filter((a) => !a.featured),
+].slice(0, 3);
 ---
 
 <BaseLayout>

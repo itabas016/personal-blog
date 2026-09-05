@@ -1,56 +1,240 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import AppCard from "../components/AppCard.astro";
-import { apps } from "../data/apps";
+import { apps, CATEGORIES, APP_GRADIENTS, type App } from "../data/apps";
 
-const order = { live: 0, wip: 1, archived: 2 } as const;
-const sorted = [...apps].sort(
-  (a, b) =>
-    order[a.status] - order[b.status] ||
-    b.addedAt.localeCompare(a.addedAt),
-);
-const liveCount = apps.filter((a) => a.status === "live").length;
-const vibeCount = apps.filter((a) => a.vibeCoded).length;
+const STATUS_ORDER = { live: 0, wip: 1 } as const;
+// 在营应用（live + wip）进精选与网格；archived 走页底时间线
+const active = apps
+  .filter((a) => a.status !== "archived")
+  .sort(
+    (a, b) =>
+      STATUS_ORDER[a.status] - STATUS_ORDER[b.status] ||
+      b.addedAt.localeCompare(a.addedAt),
+  );
+const featured = active.filter((a) => a.featured);
+const archived = apps
+  .filter((a) => a.status === "archived")
+  .sort((a, b) => b.addedAt.localeCompare(a.addedAt));
 
-// 三条跑马灯轨道，round-robin 分配；中轨反向
-const rows: (typeof sorted)[] = [0, 1, 2].map((r) => sorted.filter((_, i) => i % 3 === r));
-const DURATIONS = ["52s", "64s", "58s"];
+const liveCount = active.filter((a) => a.status === "live").length;
+const vibeCount = active.filter((a) => a.vibeCoded).length;
+const countOf = (id: string) => active.filter((a) => a.category === id).length;
+const uncategorized = active.filter((a) => !a.category).length;
+
+const categoryLabel = (app: App) =>
+  CATEGORIES.find((c) => c.id === app.category);
+
+// 精选区布局：[3+2] 两栏 + 一条通栏，不对称节奏
+const FEATURED_SPANS = ["lg:col-span-3", "lg:col-span-2", "lg:col-span-5"];
 ---
 
-<BaseLayout title="Apps" description="Vibe coding 应用展示墙 —— 用 AI Agent 快速构建的小工具与产品，多数托管在 Cloudflare 上。">
+<BaseLayout
+  title="Apps"
+  description="Vibe coding 应用展示墙 —— 用 AI Agent 快速构建的小工具与产品，多数托管在 Cloudflare 上。"
+>
   <div class="py-10 sm:py-14">
-    <div class="relative">
-      <div class="pointer-events-none absolute -top-20 left-1/2 -z-10 h-64 w-[36rem] -translate-x-1/2 rounded-full bg-accent/15 blur-3xl" aria-hidden="true"></div>
-      <p class="font-mono text-xs tracking-widest text-faint uppercase">Vibe Coding Gallery</p>
+    <!-- Hero：标题 + 数字条 -->
+    <header class="relative">
+      <div
+        class="pointer-events-none absolute -top-20 left-1/2 -z-10 h-64 w-[36rem] -translate-x-1/2 rounded-full bg-accent/15 blur-3xl"
+        aria-hidden="true"
+      >
+      </div>
+      <p class="font-mono text-xs uppercase tracking-widest text-faint">Vibe Coding Gallery</p>
       <h1 class="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
         <span class="text-gradient">Apps</span> —— 想到，就做到。
       </h1>
       <p class="mt-3 max-w-2xl leading-relaxed text-muted">
         vibe coding 把写小应用的门槛从「做到」降到了「想到」。
-        这里滚动着 <span class="text-default">{apps.length}</span> 个应用：
-        <span class="text-default">{liveCount}</span> 个在线、
-        <span class="text-accent">{vibeCount}</span> 个由 AI Agent 协作开发，大多托管在
-        Cloudflare 上。悬停可暂停滚动。
+        这里按用途分类收录 <span class="text-default">{apps.length}</span> 个应用，
+        点标签即可筛选；更早的折腾记录在页底时间线里。
       </p>
-    </div>
+      <dl class="mt-7 flex flex-wrap gap-x-10 gap-y-4">
+        <div>
+          <dt class="text-xs text-faint">应用</dt>
+          <dd class="mt-0.5 text-2xl font-semibold tabular-nums tracking-tight">{apps.length}</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-faint">在线</dt>
+          <dd class="mt-0.5 text-2xl font-semibold tabular-nums tracking-tight">
+            {liveCount}<span class="text-base font-normal text-faint"> / {active.length}</span>
+          </dd>
+        </div>
+        <div>
+          <dt class="text-xs text-faint">vibe-coded</dt>
+          <dd class="mt-0.5 text-2xl font-semibold tabular-nums tracking-tight">
+            {vibeCount}<span class="text-base font-normal text-faint"> / {active.length}</span>
+          </dd>
+        </div>
+        <div>
+          <dt class="text-xs text-faint">最早可追溯到</dt>
+          <dd class="mt-0.5 text-2xl font-semibold tabular-nums tracking-tight">2017</dd>
+        </div>
+      </dl>
+    </header>
 
-    <div class="mt-12 space-y-6">
-      {
-        rows.map((row, r) => (
-          <div class="apps-marquee">
-            <div class:list={["apps-track", r === 1 && "reverse"]} style={`--dur: ${DURATIONS[r]}`}>
-              {[0, 1].map((half) => (
-                <div class="apps-half" aria-hidden={half === 1 ? "true" : undefined}>
-                  {row.map((app) => (
-                    <AppCard app={app} class="w-[21rem] shrink-0" />
-                  ))}
+    <!-- Featured：手挑推广位 -->
+    <section id="featured" class="mt-12" aria-label="精选应用">
+      <div class="flex items-baseline justify-between">
+        <h2 class="text-xl font-semibold tracking-tight">Featured</h2>
+        <span class="text-sm text-faint">手工挑的 {featured.length} 个，值得先玩</span>
+      </div>
+      <div class="mt-5 grid gap-4 lg:grid-cols-5">
+        {
+          featured.map((app, i) => {
+            const gradient = APP_GRADIENTS[app.gradient] ?? APP_GRADIENTS.violet;
+            const cat = categoryLabel(app);
+            const wide = i === 2; // 第三个精选位通栏，视觉区转左侧
+            return (
+              <article
+                class:list={[
+                  "group flex overflow-hidden rounded-2xl border border-line bg-surface transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-[0_8px_30px_-12px] hover:shadow-accent/25",
+                  wide ? "max-lg:flex-col lg:flex-row" : "flex-col",
+                  FEATURED_SPANS[i] ?? "lg:col-span-5",
+                ]}
+              >
+                <div
+                  class:list={[
+                    "relative flex shrink-0 items-center justify-center overflow-hidden bg-gradient-to-br",
+                    gradient,
+                    wide ? "lg:w-2/5 min-h-44 lg:min-h-full" : "h-44",
+                  ]}
+                  aria-hidden="true"
+                >
+                  <span
+                    class="absolute inset-0 flex select-none items-center justify-center whitespace-nowrap px-4 text-5xl font-bold tracking-tight text-white/10"
+                    aria-hidden="true"
+                  >
+                    {app.name}
+                  </span>
+                  <span class="relative text-6xl drop-shadow-lg transition-transform duration-200 group-hover:scale-105">
+                    {app.emoji}
+                  </span>
                 </div>
-              ))}
+                <div class="flex flex-1 flex-col p-6">
+                  <div class="flex items-center gap-2 text-xs">
+                    {cat && (
+                      <span class="rounded-full bg-elevated px-2.5 py-1 text-muted">
+                        {cat.emoji} {cat.label}
+                      </span>
+                    )}
+                    {app.status === "wip" && (
+                      <span class="rounded-full bg-elevated px-2.5 py-1 text-muted">WIP</span>
+                    )}
+                  </div>
+                  <h3 class="mt-3 text-xl font-semibold tracking-tight">{app.name}</h3>
+                  <p class="mt-2 text-sm leading-relaxed text-muted">{app.tagline}</p>
+                  <div class="mt-4 flex flex-wrap gap-1.5">
+                    {app.stack.map((s) => (
+                      <span class="rounded-md bg-elevated px-2 py-0.5 font-mono text-[11px] text-muted">
+                        {s}
+                      </span>
+                    ))}
+                  </div>
+                  <div class="mt-5 flex flex-1 items-end justify-between gap-3 border-t border-line/60 pt-4">
+                    <span class="text-xs text-faint">
+                      {app.addedAt}
+                      {app.vibeCoded && (
+                        <span class="ml-2 text-accent" title={`AI 协作开发${app.model ? ` · ${app.model}` : ""}`}>
+                          ✦ vibe-coded
+                        </span>
+                      )}
+                    </span>
+                    {app.links?.live && (
+                      <a
+                        class="shrink-0 rounded-lg border border-accent/50 px-3.5 py-1.5 text-sm font-medium text-accent transition-colors duration-150 hover:bg-accent/10"
+                        href={app.links.live}
+                        target="_blank"
+                        rel="noopener"
+                      >
+                        打开应用 ↗
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </article>
+            );
+          })
+        }
+      </div>
+    </section>
+
+    <!-- 全部应用：分类筛选 + 网格 -->
+    <section class="mt-14" aria-label="全部应用">
+      <div
+        id="filter-bar"
+        class="hidden flex-wrap items-center gap-2"
+        role="group"
+        aria-label="按用途分类筛选"
+      >
+        <button type="button" class="app-pill" data-filter="all" aria-pressed="true">
+          全部<span class="app-pill-count">{active.length}</span>
+        </button>
+        {
+          CATEGORIES.map((c) => (
+            <button type="button" class="app-pill" data-filter={c.id} aria-pressed="false">
+              {c.emoji} {c.label}
+              <span class="app-pill-count">{countOf(c.id)}</span>
+            </button>
+          ))
+        }
+        {
+          uncategorized > 0 && (
+            <button type="button" class="app-pill" data-filter="uncategorized" aria-pressed="false">
+              未分类<span class="app-pill-count">{uncategorized}</span>
+            </button>
+          )
+        }
+      </div>
+
+      <div id="app-grid" class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          active.map((app, i) => (
+            <div
+              data-category={app.category ?? "uncategorized"}
+              data-featured={app.featured ? "true" : undefined}
+              hidden={app.featured ? true : undefined}
+              style={`--i:${i}`}
+            >
+              <AppCard app={app} class="h-full" />
             </div>
-          </div>
-        ))
-      }
-    </div>
+          ))
+        }
+      </div>
+      <p id="grid-empty" hidden class="mt-6 rounded-2xl border border-dashed border-line p-8 text-center text-sm text-muted">
+        这个分类下暂时没有在线应用，欢迎来
+        <a class="text-accent hover:underline" href="https://github.com/itabas016" target="_blank" rel="noopener">GitHub</a>
+        提个需求。
+      </p>
+    </section>
+
+    <!-- 早期作品时间线 -->
+    <section class="mt-16" aria-label="早期作品">
+      <div class="flex flex-wrap items-baseline justify-between gap-2">
+        <h2 class="text-xl font-semibold tracking-tight">早期作品</h2>
+        <span class="text-sm text-faint">比 vibe coding 更早的折腾</span>
+      </div>
+      <ol class="mt-3">
+        {
+          archived.map((app) => (
+            <li class="flex flex-wrap items-baseline gap-x-4 gap-y-1 border-b border-line/60 py-3.5">
+              <span class="w-16 shrink-0 font-mono text-xs tabular-nums text-faint">{app.addedAt}</span>
+              <span class="text-lg leading-none" aria-hidden="true">{app.emoji}</span>
+              <a
+                class="font-medium transition-colors hover:text-accent"
+                href={app.links?.live}
+                target="_blank"
+                rel="noopener"
+              >
+                {app.name} ↗
+              </a>
+              <span class="flex-1 text-sm text-muted">{app.tagline}</span>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
 
     <p class="mt-10 text-sm text-faint">
       应用数据维护在
@@ -62,39 +246,112 @@ const DURATIONS = ["52s", "64s", "58s"];
   </div>
 </BaseLayout>
 
-<style is:global>
-  .apps-marquee {
-    overflow: hidden;
-    /* 两端渐隐，营造「无限流」观感 */
-    -webkit-mask-image: linear-gradient(to right, transparent, black 7%, black 93%, transparent);
-    mask-image: linear-gradient(to right, transparent, black 7%, black 93%, transparent);
+<style>
+  /* 筛选 pill：aria-pressed 驱动选中态 */
+  .app-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border-radius: 9999px;
+    border: 1px solid var(--line);
+    padding: 0.375rem 0.875rem;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    transition: color 150ms cubic-bezier(0.23, 1, 0.32, 1), border-color 150ms cubic-bezier(0.23, 1, 0.32, 1),
+      background-color 150ms cubic-bezier(0.23, 1, 0.32, 1);
   }
-  .apps-track {
-    display: flex;
-    width: max-content;
-    animation: apps-scroll var(--dur, 56s) linear infinite;
+  .app-pill:hover {
+    border-color: color-mix(in oklab, var(--color-accent) 40%, transparent);
+    color: var(--text-default);
   }
-  .apps-track.reverse {
-    animation-direction: reverse;
+  .app-pill:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
   }
-  .apps-half {
-    display: flex;
-    gap: 1rem;
-    padding-right: 1rem;
+  .app-pill[aria-pressed="true"] {
+    border-color: color-mix(in oklab, var(--color-accent) 45%, transparent);
+    background-color: color-mix(in oklab, var(--color-accent) 12%, transparent);
+    color: var(--color-accent);
   }
-  .apps-marquee:hover .apps-track {
-    animation-play-state: paused;
+  .app-pill-count {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-faint);
+    font-variant-numeric: tabular-nums;
   }
-  @keyframes apps-scroll {
+  .app-pill[aria-pressed="true"] .app-pill-count {
+    color: var(--color-accent);
+  }
+
+  /* 网格卡片入场 / 筛选重排：淡入上移，stagger 40ms */
+  #app-grid > [data-category] {
+    animation: card-in 200ms cubic-bezier(0.23, 1, 0.32, 1) both;
+    animation-delay: calc(var(--i, 0) * 40ms);
+  }
+  @keyframes card-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
     to {
-      transform: translateX(-50%);
+      opacity: 1;
+      transform: translateY(0);
     }
   }
   @media (prefers-reduced-motion: reduce) {
-    .apps-track {
+    #app-grid > [data-category] {
       animation: none;
-      flex-wrap: wrap;
-      width: auto;
     }
   }
 </style>
+
+<script>
+  // 渐进增强：无 JS 时 pills 隐藏、精选 + 全量网格照常可读
+  const bar = document.getElementById("filter-bar")!;
+  const pills = [...bar.querySelectorAll<HTMLButtonElement>("button[data-filter]")];
+  const cards = [...document.querySelectorAll<HTMLElement>("#app-grid > [data-category]")];
+  const featuredSection = document.getElementById("featured")!;
+  const empty = document.getElementById("grid-empty")!;
+
+  const fromUrl = new URLSearchParams(location.search).get("c");
+  const initial = pills.some((p) => p.dataset.filter === fromUrl) ? fromUrl! : "all";
+
+  function apply(filter: string) {
+    for (const pill of pills) {
+      pill.setAttribute("aria-pressed", String(pill.dataset.filter === filter));
+    }
+    // 「全部」：精选应用只在顶部大卡区出现；筛选时精选区让位，被筛中的精选应用回网格
+    featuredSection.hidden = filter !== "all";
+    let visible = 0;
+    for (const card of cards) {
+      const show =
+        filter === "all"
+          ? !card.dataset.featured
+          : card.dataset.category === filter;
+      card.hidden = !show;
+      if (show) card.style.setProperty("--i", String(visible++));
+    }
+    empty.hidden = visible !== 0;
+  }
+
+  apply(initial);
+  bar.classList.remove("hidden");
+  bar.classList.add("flex");
+
+  pills.forEach((pill) =>
+    pill.addEventListener("click", () => {
+      apply(pill.dataset.filter!);
+      const url = new URL(location.href);
+      if (pill.dataset.filter === "all") url.searchParams.delete("c");
+      else url.searchParams.set("c", pill.dataset.filter!);
+      history.replaceState(null, "", url);
+      // 重触发入场动画
+      for (const card of cards) {
+        if (card.hidden) continue;
+        card.style.animation = "none";
+        void card.offsetWidth;
+        card.style.animation = "";
+      }
+    }),
+  );
+</script>

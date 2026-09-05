@@ -128,6 +128,10 @@ interface App {
   emoji: string;           // 图标（渐变色块背景）
   stack: string[];         // 技术栈 chips
   status: "live" | "wip" | "archived";
+  category?: CategoryId;   // 用途分类 experiments/data/reading/life/tools；缺省 = 未分类
+  featured?: boolean;      // 精选位：/apps 顶部大卡区 + 首页速览
+  cover?: string;          // 应用截图（16:10），public/images/apps/<slug>/cover.png
+  posts?: string[];        // 关联博客文章 slug，实现笔记互链
   links?: { live?: string; repo?: string };
   vibeCoded: boolean;      // 是否 AI 协作开发
   model?: string;          // 使用的模型/Agent，如 "Claude Code"
@@ -135,9 +139,11 @@ interface App {
 }
 ```
 
-- 展示形态（2026-08 更新）：**三轨横向跑马灯**——三条轨道 round-robin 分发应用卡片，中轨反向滚动、悬停暂停、两端渐隐 mask，`prefers-reduced-motion` 时退化为静态折行；卡片 hover 泛起主色微光。
-- 排序：Live 优先，再按 addedAt 倒序；`vibeCoded` 应用带小徽章呼应 AI 主题。
-- 首页含「Vibe Coding Apps」速览（取前 3 个 live 应用），引流到 `/apps`。
+- 展示形态（2026-09 更新）：**分类目录页**——眼球与效率分工，首页速览引流，`/apps` 负责浏览与转化。页面结构：Hero（标题 + tabular-nums 数字条）→ Featured 精选大卡区（`featured` 标记，3+2+通栏不对称布局）→ 分类筛选 pills（按用途：实验/数据/阅读/生活/工具，vanilla JS 渐进增强，筛选态同步 `?c=` 到 URL）→ 应用网格 → 早期作品时间线（archived 不进网格）。
+- 分类原则：按用途（访客视角）分类，技术栈是卡片 tag 不参与分类；`category` 为可选字段，漏填的应用落「未分类」照常展示，加应用永不被 schema 卡住。
+- 交互：筛选时 Featured 区隐藏、被筛中的精选应用回网格；pill 用 `aria-pressed` 驱动选中态；网格重排 200ms 淡入上移 stagger 40ms，`prefers-reduced-motion` 时关闭；无 JS 时 pills 隐藏、精选 + 全量网格照常可读。
+- 排序：网格 Live 优先再按 addedAt 倒序；时间线按 addedAt 倒序；`vibeCoded` 应用带 ✦ 徽章呼应 AI 主题。
+- 首页含「Vibe Coding Apps」速览（优先 `featured`，不足三个用其余 live 应用补齐），引流到 `/apps`。
 
 ## 7. 迁移策略（G6）
 
