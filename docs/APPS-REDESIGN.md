@@ -56,11 +56,11 @@ v2 方案（跑马灯 → 精选大卡 + 筛选网格）解决了结构问题，
 ```
 Hero：H1 + 一句话说明（无统计数字条）
 ──────────────────────────────────────────
-Featured：全量大卡自动轮播（11 个应用全部出场，一屏 3 卡 / 2 卡 / 1 卡随断点）
+Featured：全量大卡自动轮播（全部应用出场，一屏 3 卡 / 2 卡 / 1 卡随断点）
           卡片 = 状态点 · 分类 · 日期｜emoji 图标位｜应用名｜一句话｜stack chips｜打开应用 ↗
           5s 自动步进 1 卡 · 循环；两侧 ‹ › 箭头按页手动翻；页码点直达；悬停/聚焦暂停；reduced-motion 停用自动播放
 ──────────────────────────────────────────
-筛选 pills：全部 9 ｜ 实验 1 ｜ 数据 2 ｜ 阅读 2 ｜ 生活 3 ｜ 工具 1（只过滤下方网格，URL 同步 ?c=）
+筛选 pills：全部 15 ｜ 实验 2 ｜ 数据 2 ｜ 阅读 3 ｜ 生活 3 ｜ 工具 5（只过滤下方网格，URL 同步 ?c=）
 应用网格：3 列 → 2 列 → 1 列，既有 AppCard；wip 徽章；无 vibe-coded 标注
 ──────────────────────────────────────────
 早期作品时间线：一行一条（年月 · 名称 ↗ · 一句话），灰调；链接已死的（Personal Wiki）退化为纯文本
@@ -72,11 +72,11 @@ Featured：全量大卡自动轮播（11 个应用全部出场，一屏 3 卡 / 
 
 | 分类 | id | 应用 | 数量 |
 |---|---|---|---|
-| 实验 | `experiments` | Universe Modeling | 1 |
+| 实验 | `experiments` | Universe Modeling, MarbleFlow 弹珠链迹 | 2 |
 | 数据 | `data` | Equity Research, Polymarket Monitor | 2 |
-| 阅读 | `reading` | Reading Challenge, Immersive Reading | 2 |
+| 阅读 | `reading` | Reading Challenge, Immersive Reading, Novelist Site | 3 |
 | 生活 | `life` | Family Tree, WillFit, BadmintonSettle | 3 |
-| 工具 | `tools` | Rune | 1 |
+| 工具 | `tools` | Rune, EnglishMate, MeetPulse, Lingxi, V2EX PWA | 5 |
 | （时间线） | — | Homeless.group, Personal Wiki（archived） | 2 |
 
 三条原则：`category` 是可选字段，漏填的应用进「未分类」照常展示；archived 不进网格，由 `status` 驱动进时间线；`featured` 是精选位开关，与分类正交。
