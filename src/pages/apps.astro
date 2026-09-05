@@ -46,78 +46,81 @@ const categoryLabel = (app: App) => CATEGORIES.find((c) => c.id === app.category
       </p>
     </header>
 
-    <!-- Featured：全量应用大卡轮播，自动翻页，悬停暂停 -->
+    <!-- Featured：全量应用大卡轮播，一屏 3 卡，自动步进 + 左右翻页 -->
     <section class="mt-12" aria-label="应用轮播" aria-roledescription="carousel">
-      <div class="flex items-center justify-between">
-        <h2 class="text-xl font-semibold tracking-tight">Featured</h2>
-        <div class="hidden items-center gap-1.5" id="carousel-controls">
-          <button type="button" class="carousel-btn" data-carousel-prev aria-label="上一款应用">&lsaquo;</button>
-          <button type="button" class="carousel-btn" data-carousel-next aria-label="下一款应用">&rsaquo;</button>
-        </div>
-      </div>
+      <h2 class="text-xl font-semibold tracking-tight">Featured</h2>
 
-      <div
-        class="carousel-viewport mt-5 rounded-2xl border border-line bg-surface"
-        id="carousel-viewport"
-        tabindex="0"
-        aria-label="应用卡片，左右滚动或用按钮翻页"
-      >
-        {
-          ordered.map((app) => {
-            const gradient = APP_GRADIENTS[app.gradient] ?? APP_GRADIENTS.violet;
-            const status = STATUS[app.status];
-            const cat = categoryLabel(app);
-            return (
-              <article class="carousel-card">
-                <div class="flex h-full flex-col gap-5 p-7 sm:p-10">
-                  <div class="flex items-start gap-5">
-                    <div
-                      class={`flex size-16 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${gradient} text-3xl shadow-inner`}
-                      aria-hidden="true"
-                    >
-                      {app.emoji}
-                    </div>
-                    <div class="min-w-0">
-                      <p class="flex flex-wrap items-center gap-2 text-xs text-faint">
-                        <span class={`inline-block size-1.5 rounded-full ${status.dot}`}></span>
-                        {status.label}
-                        {cat && (
-                          <>
-                            <span aria-hidden="true">·</span>
-                            {cat.label}
-                          </>
-                        )}
-                        <span aria-hidden="true">·</span>
-                        {app.addedAt}
-                      </p>
-                      <h3 class="mt-1.5 text-2xl font-semibold tracking-tight sm:text-3xl">{app.name}</h3>
-                    </div>
-                  </div>
-                  <p class="text-sm leading-relaxed text-muted sm:text-base">{app.tagline}</p>
-                  <div class="flex flex-wrap gap-1.5">
-                    {app.stack.map((s) => (
-                      <span class="rounded-md bg-elevated px-2 py-0.5 font-mono text-[11px] text-muted">
-                        {s}
-                      </span>
-                    ))}
-                  </div>
-                  {app.links?.live && (
-                    <div class="mt-auto flex justify-end border-t border-line/60 pt-4">
-                      <a
-                        class="text-sm font-medium text-accent transition-colors duration-150 hover:underline"
-                        href={app.links.live}
-                        target="_blank"
-                        rel="noopener"
+      <div class="relative mt-5">
+        <div
+          class="carousel-viewport"
+          id="carousel-viewport"
+          tabindex="0"
+          aria-label="应用卡片，左右滚动或用两侧箭头翻页"
+        >
+          {
+            ordered.map((app) => {
+              const gradient = APP_GRADIENTS[app.gradient] ?? APP_GRADIENTS.violet;
+              const status = STATUS[app.status];
+              const cat = categoryLabel(app);
+              return (
+                <div class="carousel-card">
+                  <article class="flex h-full flex-col gap-4 rounded-2xl border border-line bg-surface p-5 sm:p-6">
+                    <div class="flex items-start gap-4">
+                      <div
+                        class={`flex size-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${gradient} text-2xl shadow-inner`}
+                        aria-hidden="true"
                       >
-                        打开应用 ↗
-                      </a>
+                        {app.emoji}
+                      </div>
+                      <div class="min-w-0">
+                        <p class="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-faint">
+                          <span class={`inline-block size-1.5 rounded-full ${status.dot}`}></span>
+                          {status.label}
+                          {cat && (
+                            <>
+                              <span aria-hidden="true">·</span>
+                              {cat.label}
+                            </>
+                          )}
+                          <span aria-hidden="true">·</span>
+                          {app.addedAt}
+                        </p>
+                        <h3 class="mt-1 text-xl font-semibold tracking-tight">{app.name}</h3>
+                      </div>
                     </div>
-                  )}
+                    <p class="text-sm leading-relaxed text-muted">{app.tagline}</p>
+                    <div class="flex flex-wrap gap-1.5">
+                      {app.stack.map((s) => (
+                        <span class="rounded-md bg-elevated px-2 py-0.5 font-mono text-[11px] text-muted">
+                          {s}
+                        </span>
+                      ))}
+                    </div>
+                    {app.links?.live && (
+                      <div class="mt-auto flex justify-end border-t border-line/60 pt-3">
+                        <a
+                          class="text-sm font-medium text-accent transition-colors duration-150 hover:underline"
+                          href={app.links.live}
+                          target="_blank"
+                          rel="noopener"
+                        >
+                          打开应用 ↗
+                        </a>
+                      </div>
+                    )}
+                  </article>
                 </div>
-              </article>
-            );
-          })
-        }
+              );
+            })
+          }
+        </div>
+
+        <button type="button" class="carousel-arrow carousel-arrow-prev" data-carousel-prev aria-label="向左翻页" hidden>
+          &lsaquo;
+        </button>
+        <button type="button" class="carousel-arrow carousel-arrow-next" data-carousel-next aria-label="向右翻页" hidden>
+          &rsaquo;
+        </button>
       </div>
 
       <div
@@ -229,13 +232,14 @@ const categoryLabel = (app: App) => CATEGORIES.find((c) => c.id === app.category
 </BaseLayout>
 
 <style>
-  /* ---------- 轮播 ---------- */
+  /* ---------- 轮播：一屏 3 卡（lg）/ 2 卡（sm）/ 1 卡（移动） ---------- */
   .carousel-viewport {
     display: flex;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
+    margin-inline: -0.5rem;
   }
   .carousel-viewport::-webkit-scrollbar {
     display: none;
@@ -247,29 +251,54 @@ const categoryLabel = (app: App) => CATEGORIES.find((c) => c.id === app.category
   .carousel-card {
     flex: 0 0 100%;
     min-width: 100%;
+    padding-inline: 0.5rem;
     scroll-snap-align: start;
     scroll-snap-stop: always;
   }
-  .carousel-btn {
+  @media (min-width: 640px) {
+    .carousel-card {
+      flex-basis: 50%;
+      min-width: 50%;
+    }
+  }
+  @media (min-width: 1024px) {
+    .carousel-card {
+      flex-basis: 33.3333%;
+      min-width: 33.3333%;
+    }
+  }
+  .carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 2rem;
-    height: 2rem;
+    width: 2.25rem;
+    height: 2.25rem;
     border-radius: 8px;
     border: 1px solid var(--line);
+    background: var(--surface);
     color: var(--text-muted);
-    font-size: 1.125rem;
+    font-size: 1.5rem;
     line-height: 1;
+    box-shadow: 0 4px 12px rgb(0 0 0 / 0.15);
     transition: color 150ms cubic-bezier(0.23, 1, 0.32, 1), border-color 150ms cubic-bezier(0.23, 1, 0.32, 1);
   }
-  .carousel-btn:hover {
+  .carousel-arrow:hover {
     border-color: color-mix(in oklab, var(--color-accent) 40%, transparent);
     color: var(--color-accent);
   }
-  .carousel-btn:focus-visible {
+  .carousel-arrow:focus-visible {
     outline: 2px solid var(--color-accent);
     outline-offset: 2px;
+  }
+  .carousel-arrow-prev {
+    left: -0.25rem;
+  }
+  .carousel-arrow-next {
+    right: -0.25rem;
   }
   .carousel-dot {
     width: 8px;
@@ -349,19 +378,23 @@ const categoryLabel = (app: App) => CATEGORIES.find((c) => c.id === app.category
 </style>
 
 <script>
-  // ---------- 轮播：自动翻页，悬停/聚焦暂停，reduced-motion 停用自动播放 ----------
+  // ---------- 轮播：一屏 3 卡，自动步进 1 卡，两侧箭头按页翻 ----------
   const section = document.querySelector<HTMLElement>("section[aria-roledescription='carousel']")!;
   const viewport = document.getElementById("carousel-viewport")!;
   const cards = [...viewport.children] as HTMLElement[];
   const dots = [...document.querySelectorAll<HTMLButtonElement>("[data-carousel-dot]")];
-  const controls = document.getElementById("carousel-controls")!;
-  const dotsBar = document.getElementById("carousel-dots")!;
-  const prevBtn = controls.querySelector<HTMLButtonElement>("[data-carousel-prev]")!;
-  const nextBtn = controls.querySelector<HTMLButtonElement>("[data-carousel-next]")!;
+  const prevBtn = document.querySelector<HTMLButtonElement>("[data-carousel-prev]")!;
+  const nextBtn = document.querySelector<HTMLButtonElement>("[data-carousel-next]")!;
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   let index = 0;
   let timer: ReturnType<typeof setInterval> | null = null;
+
+  // 单步 = 相邻卡片左缘距离（含卡片间距）；一屏卡片数按实测宽度算
+  const step = () =>
+    cards.length > 1 ? cards[1]!.offsetLeft - cards[0]!.offsetLeft : viewport.clientWidth;
+  const perView = () => Math.max(1, Math.round(viewport.clientWidth / step()));
+  const maxIndex = () => Math.max(0, cards.length - perView());
 
   function syncDots() {
     dots.forEach((dot, di) => {
@@ -371,9 +404,9 @@ const categoryLabel = (app: App) => CATEGORIES.find((c) => c.id === app.category
   }
 
   function goTo(i: number, animate = true) {
-    index = (i + cards.length) % cards.length;
+    index = Math.min(Math.max(i, 0), maxIndex());
     viewport.scrollTo({
-      left: index * viewport.clientWidth,
+      left: index * step(),
       behavior: animate && !reduce ? "smooth" : "auto",
     });
     syncDots();
@@ -383,7 +416,7 @@ const categoryLabel = (app: App) => CATEGORIES.find((c) => c.id === app.category
   viewport.addEventListener(
     "scroll",
     () => {
-      const i = Math.min(cards.length - 1, Math.round(viewport.scrollLeft / viewport.clientWidth));
+      const i = Math.min(maxIndex(), Math.max(0, Math.round(viewport.scrollLeft / step())));
       if (i !== index) {
         index = i;
         syncDots();
@@ -394,7 +427,7 @@ const categoryLabel = (app: App) => CATEGORIES.find((c) => c.id === app.category
 
   function play() {
     if (reduce || timer) return;
-    timer = setInterval(() => goTo(index + 1), 5000);
+    timer = setInterval(() => goTo(index >= maxIndex() ? 0 : index + 1), 5000);
   }
   function stop() {
     if (timer) {
@@ -404,11 +437,11 @@ const categoryLabel = (app: App) => CATEGORIES.find((c) => c.id === app.category
   }
 
   prevBtn.addEventListener("click", () => {
-    goTo(index - 1);
+    goTo(index > 0 ? index - perView() : maxIndex());
     play();
   });
   nextBtn.addEventListener("click", () => {
-    goTo(index + 1);
+    goTo(index >= maxIndex() ? 0 : index + perView());
     play();
   });
   dots.forEach((dot, di) =>
@@ -425,10 +458,10 @@ const categoryLabel = (app: App) => CATEGORIES.find((c) => c.id === app.category
   addEventListener("resize", () => goTo(index, false));
 
   syncDots();
-  controls.classList.remove("hidden");
-  controls.classList.add("flex");
-  dotsBar.classList.remove("hidden");
-  dotsBar.classList.add("flex");
+  prevBtn.hidden = false;
+  nextBtn.hidden = false;
+  document.getElementById("carousel-dots")!.classList.remove("hidden");
+  document.getElementById("carousel-dots")!.classList.add("flex");
   play();
 
   // ---------- 分类筛选：只作用于网格，轮播常驻 ----------
