@@ -2,8 +2,9 @@
  * /apps 页面数据源 —— 加一个应用 = 加一条记录，无需改页面代码。
  * 字段含义见 docs/DESIGN.md §6。
  *
- * 链接说明：所有 links.live 均已于 2026-08-31 实测可达
- * （polymarket-monitor 例外，见下）；GitHub 仓库均为私有仓，故不放 repo 链接。
+ * 链接说明：2026-09-05 对照 Cloudflare API（workers / 自定义域 / Pages）逐一核实。
+ * 有自定义域名的一律用自定义域名；没有的用 *.pages.dev / *.workers.dev 默认域。
+ * 例外：polymarket-monitor 仍返回 403（Cloudflare Access 保护），personal-wiki 已下线，见各自注释。
  */
 
 /** 按用途分类（访客视角），技术栈作为卡片 tag 呈现，不参与分类 */
@@ -83,10 +84,10 @@ export const apps: App[] = [
     tagline: "阅读挑战打卡，把年度书单变成可以坚持的游戏。",
     emoji: "📚",
     gradient: "emerald",
-    stack: ["Astro", "Cloudflare Pages"],
+    stack: ["Astro", "Cloudflare Workers"],
     status: "live",
     category: "reading",
-    links: { live: "https://reading-challenge.pages.dev" },
+    links: { live: "https://reading-challenge.itabas.com" },
     vibeCoded: true,
     model: "Claude Code",
     addedAt: "2026-08",
@@ -128,7 +129,7 @@ export const apps: App[] = [
     stack: ["Next.js", "Cloudflare Workers", "R2"],
     status: "live",
     category: "life",
-    links: { live: "https://family-tree.pages.dev" },
+    links: { live: "https://family-tree.itabas.com" },
     vibeCoded: true,
     model: "Claude Code",
     addedAt: "2026-08",
@@ -155,6 +156,7 @@ export const apps: App[] = [
     status: "live",
     category: "life",
     featured: true,
+    // 另有等价自定义域 badminton-activity.itabas.com，指向同一 worker
     links: { live: "https://bdm.itabas.com" },
     vibeCoded: true,
     model: "Claude Code",
@@ -186,12 +188,12 @@ export const apps: App[] = [
   },
   {
     name: "Personal Wiki",
+    // ⚠️ 2026-09-05 实测已无法访问（https TLS 握手失败、http 502），链接移除
     tagline: "个人知识库，沉淀 2017 年前后的技术笔记。",
     emoji: "📚",
     gradient: "slate",
     stack: ["Wiki"],
     status: "archived",
-    links: { live: "https://wiki.itabas.com" },
     vibeCoded: false,
     addedAt: "2017-11",
   },

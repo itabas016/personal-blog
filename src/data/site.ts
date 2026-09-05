@@ -26,7 +26,7 @@ export const SITE = {
     rss: "/rss.xml",
     links: [
       { label: "Homeless.group", href: "https://www.homeless.group" },
-      { label: "Personal Wiki", href: "https://wiki.itabas.com" },
+      // Personal Wiki（wiki.itabas.com）2026-09-05 实测已下线，链接移除
     ],
   },
 } as const;
