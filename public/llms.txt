@@ -6,17 +6,17 @@
 
 ## Pages
 
-- [Blog](https://io.itabas.com/blog/): 全部文章列表，按年份分组
-- [Apps](https://io.itabas.com/apps/): vibe coding 应用展示墙
-- [AI](https://io.itabas.com/ai/): 本站 AI 使用宣言与披露等级说明
-- [Archive](https://io.itabas.com/archive/): 按年份的时间线归档
-- [About](https://io.itabas.com/about/): 作者介绍与联系方式
-- [Search](https://io.itabas.com/search/): 全文搜索（Pagefind）
+- [Blog](https://tech.itabas.com/blog/): 全部文章列表，按年份分组
+- [Apps](https://tech.itabas.com/apps/): vibe coding 应用展示墙
+- [AI](https://tech.itabas.com/ai/): 本站 AI 使用宣言与披露等级说明
+- [Archive](https://tech.itabas.com/archive/): 按年份的时间线归档
+- [About](https://tech.itabas.com/about/): 作者介绍与联系方式
+- [Search](https://tech.itabas.com/search/): 全文搜索（Pagefind）
 
 ## Feeds & data
 
-- [RSS](https://io.itabas.com/rss.xml): Atom feed，最新 20 篇（/atom.xml 为旧地址别名）
-- [Sitemap](https://io.itabas.com/sitemap-index.xml)
+- [RSS](https://tech.itabas.com/rss.xml): Atom feed，最新 20 篇（/atom.xml 为旧地址别名）
+- [Sitemap](https://tech.itabas.com/sitemap-index.xml)
 - 旧域名 tech.itabas.com 与旧 permalink /:year/:month/:day/:title/ 自动跳转至新地址
 
 ## Content policy

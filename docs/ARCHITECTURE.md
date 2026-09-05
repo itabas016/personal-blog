@@ -80,11 +80,11 @@ draft: boolean           # 默认 false，true 则全渠道隐藏
 本地 / Claude Code Agent
   └─ git push → GitHub (main)
        └─ GitHub Actions: npm ci → astro build → pagefind → 部署 dist/ 至 GitHub Pages
-            └─ CNAME: io.itabas.com（DNS CNAME → itabas016.github.io）
+            └─ CNAME: tech.itabas.com（DNS CNAME → itabas016.github.io）
 ```
 
 - 与旧流程（Bitbucket 私有源码 + 本地 `hexo deploy` 推送 gh-pages）对比：**源码与产物同仓**，构建在 CI，可回滚、可审计。
-- 仓库改名建议：GitHub 仓库即 `personal-blog`（本项目），Pages 仍发布到 `itabas016.github.io` 对应的域名 `io.itabas.com`。
+- 仓库改名建议：GitHub 仓库即 `personal-blog`（本项目），Pages 仍发布到 `itabas016.github.io` 对应的域名 `tech.itabas.com`。
 - 关键文件：`.github/workflows/deploy.yml`、`public/CNAME`。
 
 ## 5. 兼容性策略

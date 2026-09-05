@@ -10,7 +10,7 @@
 |---|---|
 | 框架 | Hexo 3.9（2022 年锁定），主题 even |
 | 内容 | 58 篇文章，7 个分类（database / tools / vps / raspberry / web / python / life） |
-| 托管 | Bitbucket 私有仓库 → `hexo deploy` 推送 `itabas016.github.io`（自定义域名 `io.itabas.com`，旧域名 `tech.itabas.com`） |
+| 托管 | Bitbucket 私有仓库 → `hexo deploy` 推送 `itabas016.github.io`（自定义域名 `tech.itabas.com`，旧域名 `tech.itabas.com`） |
 | 特性 | Atom feed、sitemap、本地搜索（search.xml）、旧 permalink `:year/:month/:day/:title/` |
 
 存在的核心问题：

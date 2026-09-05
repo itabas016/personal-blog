@@ -36,7 +36,7 @@
 | `source/ref/*` | `public/ref/*`（Oracle/SQL 图示 gif/png） |
 | `source/screenshots/*` | `public/screenshots/*` |
 | `source/favicon.ico` | `public/favicon.ico` |
-| `source/CNAME`（io.itabas.com） | `public/CNAME`（GH Pages 自定义域名必需） |
+| `source/CNAME`（tech.itabas.com） | `public/CNAME`（GH Pages 自定义域名必需） |
 | `source/about/index.md`、`links/` | 人工改写为新版 `/about` 页（不脚本迁移） |
 
 ### 1.4 目录组织

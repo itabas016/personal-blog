@@ -1,8 +1,8 @@
 export const SITE = {
   /** 部署域名（GitHub Pages 自定义域，见 public/CNAME） */
-  url: "https://tech.itabas.com",
-  /** 曾用域名 io.itabas.com，由 Cloudflare Redirect Rule 301 到新域名 */
-  legacyUrl: "https://io.itabas.com",
+  url: "https://io.itabas.com",
+  /** 2016-2020 使用的旧域名，由 404 页兜底跳转 */
+  legacyUrl: "https://tech.itabas.com",
   title: "ITABAS",
   tagline: "Notes & apps in the AI era",
   description:
