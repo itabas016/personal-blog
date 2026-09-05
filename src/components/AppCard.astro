@@ -4,9 +4,11 @@ import { APP_GRADIENTS, type App } from "../data/apps";
 interface Props {
   app: App;
   class?: string;
+  /** 是否显示 ✦ vibe-coded 徽章，默认开；/apps 页关闭 */
+  vibeBadge?: boolean;
 }
 
-const { app, class: className = "" } = Astro.props;
+const { app, class: className = "", vibeBadge = true } = Astro.props;
 
 const gradient = APP_GRADIENTS[app.gradient] ?? APP_GRADIENTS.violet;
 
@@ -39,7 +41,7 @@ const status = STATUS[app.status];
     <span class="text-faint">
       {app.addedAt}
       {
-        app.vibeCoded && (
+        app.vibeCoded && vibeBadge && (
           <span class="ml-2 cursor-help text-accent" title={`AI 协作开发${app.model ? ` · ${app.model}` : ""}`}>
             ✦ vibe-coded
           </span>

@@ -1,27 +1,26 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import AppCard from "../components/AppCard.astro";
-import { apps, CATEGORIES, type App } from "../data/apps";
+import { apps, CATEGORIES, APP_GRADIENTS, type App } from "../data/apps";
 
-const STATUS_ORDER = { live: 0, wip: 1 } as const;
-// 在营应用（live + wip）进精选与网格；archived 走页底时间线
-const active = apps
-  .filter((a) => a.status !== "archived")
-  .sort(
-    (a, b) =>
-      STATUS_ORDER[a.status] - STATUS_ORDER[b.status] ||
-      b.addedAt.localeCompare(a.addedAt),
-  );
-const featured = active.filter((a) => a.featured);
+const STATUS: Record<App["status"], { label: string; dot: string }> = {
+  live: { label: "Live", dot: "bg-emerald-400" },
+  wip: { label: "WIP", dot: "bg-amber-400" },
+  archived: { label: "Archived", dot: "bg-zinc-400" },
+};
+const STATUS_ORDER = { live: 0, wip: 1, archived: 2 } as const;
+const byStatus = (a: App, b: App) =>
+  STATUS_ORDER[a.status] - STATUS_ORDER[b.status] || b.addedAt.localeCompare(a.addedAt);
+
+// 轮播：全部应用；网格：在营应用（live + wip）；时间线：archived
+const ordered = [...apps].sort(byStatus);
+const active = ordered.filter((a) => a.status !== "archived");
 const archived = apps
   .filter((a) => a.status === "archived")
   .sort((a, b) => b.addedAt.localeCompare(a.addedAt));
 
-const liveCount = active.filter((a) => a.status === "live").length;
-const vibeCount = active.filter((a) => a.vibeCoded).length;
 const countOf = (id: string) => active.filter((a) => a.category === id).length;
 const uncategorized = active.filter((a) => !a.category).length;
-
 const categoryLabel = (app: App) => CATEGORIES.find((c) => c.id === app.category);
 ---
 
@@ -30,7 +29,7 @@ const categoryLabel = (app: App) => CATEGORIES.find((c) => c.id === app.category
   description="Vibe coding 应用展示墙 —— 用 AI Agent 快速构建的小工具与产品，多数托管在 Cloudflare 上。"
 >
   <div class="py-10 sm:py-14">
-    <!-- Hero：标题 + 数字条 -->
+    <!-- Hero：标题 + 一句话说明 -->
     <header class="relative">
       <div
         class="pointer-events-none absolute -top-20 left-1/2 -z-10 h-64 w-[36rem] -translate-x-1/2 rounded-full bg-accent/15 blur-3xl"
@@ -42,81 +41,68 @@ const categoryLabel = (app: App) => CATEGORIES.find((c) => c.id === app.category
       </h1>
       <p class="mt-3 max-w-2xl leading-relaxed text-muted">
         vibe coding 把写小应用的门槛从「做到」降到了「想到」。
-        这里按用途分类，点标签即可筛选；更早的折腾记录在页底时间线里。
+        这里收录全部 <span class="text-default">{apps.length}</span> 个应用，
+        下方标签可按用途筛选；更早的折腾记录在页底时间线里。
       </p>
-      <dl class="mt-7 flex flex-wrap gap-x-10 gap-y-4">
-        <div>
-          <dt class="text-xs text-faint">应用</dt>
-          <dd class="mt-0.5 text-2xl font-semibold tabular-nums tracking-tight">{apps.length}</dd>
-        </div>
-        <div>
-          <dt class="text-xs text-faint">在线</dt>
-          <dd class="mt-0.5 text-2xl font-semibold tabular-nums tracking-tight">
-            {liveCount}<span class="text-base font-normal text-faint"> / {active.length}</span>
-          </dd>
-        </div>
-        <div>
-          <dt class="text-xs text-faint">vibe-coded</dt>
-          <dd class="mt-0.5 text-2xl font-semibold tabular-nums tracking-tight">
-            {vibeCount}<span class="text-base font-normal text-faint"> / {active.length}</span>
-          </dd>
-        </div>
-      </dl>
     </header>
 
-    <!-- Featured：排印式索引行，让字号与留白代替装饰图说话；cover 就绪后在右侧接截图 -->
-    <section id="featured" class="mt-12" aria-label="精选应用">
-      <h2 class="text-xl font-semibold tracking-tight">Featured</h2>
-      <div class="mt-2">
+    <!-- Featured：全量应用大卡轮播，自动翻页，悬停暂停 -->
+    <section class="mt-12" aria-label="应用轮播" aria-roledescription="carousel">
+      <div class="flex items-center justify-between">
+        <h2 class="text-xl font-semibold tracking-tight">Featured</h2>
+        <div class="hidden items-center gap-1.5" id="carousel-controls">
+          <button type="button" class="carousel-btn" data-carousel-prev aria-label="上一款应用">&lsaquo;</button>
+          <button type="button" class="carousel-btn" data-carousel-next aria-label="下一款应用">&rsaquo;</button>
+        </div>
+      </div>
+
+      <div
+        class="carousel-viewport mt-5 rounded-2xl border border-line bg-surface"
+        id="carousel-viewport"
+        tabindex="0"
+        aria-label="应用卡片，左右滚动或用按钮翻页"
+      >
         {
-          featured.map((app, i) => {
+          ordered.map((app) => {
+            const gradient = APP_GRADIENTS[app.gradient] ?? APP_GRADIENTS.violet;
+            const status = STATUS[app.status];
             const cat = categoryLabel(app);
             return (
-              <article
-                class:list={[
-                  "group grid gap-x-10 gap-y-3 border-t border-line py-7 sm:grid-cols-12 sm:gap-y-0",
-                  i === featured.length - 1 && "border-b",
-                ]}
-              >
-                <div class="sm:col-span-8">
-                  <p class="text-xs text-faint">
-                    {cat?.label}{app.status === "wip" ? " · WIP" : ""} · {app.addedAt}
-                  </p>
-                  <h3 class="mt-1.5 text-2xl font-semibold tracking-tight transition-colors duration-150 group-hover:text-accent sm:text-3xl">
-                    {app.name}
-                  </h3>
-                  <p class="mt-2 max-w-xl text-sm leading-relaxed text-muted sm:text-[15px]">
-                    {app.tagline}
-                  </p>
-                  <div class="mt-4 flex flex-wrap gap-1.5">
+              <article class="carousel-card">
+                <div class="flex h-full flex-col gap-5 p-7 sm:p-10">
+                  <div class="flex items-start gap-5">
+                    <div
+                      class={`flex size-16 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${gradient} text-3xl shadow-inner`}
+                      aria-hidden="true"
+                    >
+                      {app.emoji}
+                    </div>
+                    <div class="min-w-0">
+                      <p class="flex flex-wrap items-center gap-2 text-xs text-faint">
+                        <span class={`inline-block size-1.5 rounded-full ${status.dot}`}></span>
+                        {status.label}
+                        {cat && (
+                          <>
+                            <span aria-hidden="true">·</span>
+                            {cat.label}
+                          </>
+                        )}
+                        <span aria-hidden="true">·</span>
+                        {app.addedAt}
+                      </p>
+                      <h3 class="mt-1.5 text-2xl font-semibold tracking-tight sm:text-3xl">{app.name}</h3>
+                    </div>
+                  </div>
+                  <p class="text-sm leading-relaxed text-muted sm:text-base">{app.tagline}</p>
+                  <div class="flex flex-wrap gap-1.5">
                     {app.stack.map((s) => (
                       <span class="rounded-md bg-elevated px-2 py-0.5 font-mono text-[11px] text-muted">
                         {s}
                       </span>
                     ))}
                   </div>
-                </div>
-                <div class="flex flex-wrap items-center justify-between gap-3 sm:col-span-4 sm:flex-col sm:items-end sm:justify-end sm:gap-6">
-                  {app.cover && (
-                    <img
-                      src={app.cover}
-                      alt={`${app.name} 截图`}
-                      width="512"
-                      height="320"
-                      loading="lazy"
-                      class="w-full max-w-60 rounded-lg border border-line"
-                    />
-                  )}
-                  <div class="flex items-center gap-4 text-xs text-faint">
-                    {app.vibeCoded && (
-                      <span
-                        class="text-accent"
-                        title={`AI 协作开发${app.model ? ` · ${app.model}` : ""}`}
-                      >
-                        ✦ vibe-coded
-                      </span>
-                    )}
-                    {app.links?.live && (
+                  {app.links?.live && (
+                    <div class="mt-auto flex justify-end border-t border-line/60 pt-4">
                       <a
                         class="text-sm font-medium text-accent transition-colors duration-150 hover:underline"
                         href={app.links.live}
@@ -125,17 +111,35 @@ const categoryLabel = (app: App) => CATEGORIES.find((c) => c.id === app.category
                       >
                         打开应用 ↗
                       </a>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
               </article>
             );
           })
         }
       </div>
+
+      <div
+        class="mt-4 hidden flex-wrap items-center justify-center gap-1.5"
+        id="carousel-dots"
+        role="group"
+        aria-label="轮播页码"
+      >
+        {
+          ordered.map((app, i) => (
+            <button
+              type="button"
+              class="carousel-dot"
+              data-carousel-dot
+              aria-label={`第 ${i + 1} 款：${app.name}`}
+            />
+          ))
+        }
+      </div>
     </section>
 
-    <!-- 全部应用：分类筛选 + 网格 -->
+    <!-- 全部应用：分类筛选（只作用于下方网格，轮播不受影响） -->
     <section class="mt-14" aria-label="全部应用">
       <div
         id="filter-bar"
@@ -166,13 +170,8 @@ const categoryLabel = (app: App) => CATEGORIES.find((c) => c.id === app.category
       <div id="app-grid" class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {
           active.map((app, i) => (
-            <div
-              data-category={app.category ?? "uncategorized"}
-              data-featured={app.featured ? "true" : undefined}
-              hidden={app.featured ? true : undefined}
-              style={`--i:${i}`}
-            >
-              <AppCard app={app} class="h-full" />
+            <div data-category={app.category ?? "uncategorized"} style={`--i:${i}`}>
+              <AppCard app={app} class="h-full" vibeBadge={false} />
             </div>
           ))
         }
@@ -200,14 +199,18 @@ const categoryLabel = (app: App) => CATEGORIES.find((c) => c.id === app.category
             <li class="flex flex-wrap items-baseline gap-x-4 gap-y-1 border-b border-line/60 py-3.5">
               <span class="w-16 shrink-0 font-mono text-xs tabular-nums text-faint">{app.addedAt}</span>
               <span class="text-lg leading-none" aria-hidden="true">{app.emoji}</span>
-              <a
-                class="font-medium transition-colors hover:text-accent"
-                href={app.links?.live}
-                target="_blank"
-                rel="noopener"
-              >
-                {app.name} ↗
-              </a>
+              {app.links?.live ? (
+                <a
+                  class="font-medium transition-colors hover:text-accent"
+                  href={app.links.live}
+                  target="_blank"
+                  rel="noopener"
+                >
+                  {app.name} ↗
+                </a>
+              ) : (
+                <span class="text-muted">{app.name}</span>
+              )}
               <span class="flex-1 text-sm text-muted">{app.tagline}</span>
             </li>
           ))
@@ -226,7 +229,68 @@ const categoryLabel = (app: App) => CATEGORIES.find((c) => c.id === app.category
 </BaseLayout>
 
 <style>
-  /* 筛选 pill：aria-pressed 驱动选中态 */
+  /* ---------- 轮播 ---------- */
+  .carousel-viewport {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .carousel-viewport::-webkit-scrollbar {
+    display: none;
+  }
+  .carousel-viewport:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+  .carousel-card {
+    flex: 0 0 100%;
+    min-width: 100%;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+  .carousel-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    color: var(--text-muted);
+    font-size: 1.125rem;
+    line-height: 1;
+    transition: color 150ms cubic-bezier(0.23, 1, 0.32, 1), border-color 150ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  .carousel-btn:hover {
+    border-color: color-mix(in oklab, var(--color-accent) 40%, transparent);
+    color: var(--color-accent);
+  }
+  .carousel-btn:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+  .carousel-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 9999px;
+    background: var(--line);
+    transition: width 200ms cubic-bezier(0.23, 1, 0.32, 1), background-color 150ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  .carousel-dot:hover {
+    background: var(--text-faint);
+  }
+  .carousel-dot[aria-current="true"] {
+    width: 20px;
+    background: var(--color-accent);
+  }
+  .carousel-dot:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  /* ---------- 筛选 pill：aria-pressed 驱动选中态 ---------- */
   .app-pill {
     display: inline-flex;
     align-items: center;
@@ -285,11 +349,92 @@ const categoryLabel = (app: App) => CATEGORIES.find((c) => c.id === app.category
 </style>
 
 <script>
-  // 渐进增强：无 JS 时 pills 隐藏、精选 + 全量网格照常可读
+  // ---------- 轮播：自动翻页，悬停/聚焦暂停，reduced-motion 停用自动播放 ----------
+  const section = document.querySelector<HTMLElement>("section[aria-roledescription='carousel']")!;
+  const viewport = document.getElementById("carousel-viewport")!;
+  const cards = [...viewport.children] as HTMLElement[];
+  const dots = [...document.querySelectorAll<HTMLButtonElement>("[data-carousel-dot]")];
+  const controls = document.getElementById("carousel-controls")!;
+  const dotsBar = document.getElementById("carousel-dots")!;
+  const prevBtn = controls.querySelector<HTMLButtonElement>("[data-carousel-prev]")!;
+  const nextBtn = controls.querySelector<HTMLButtonElement>("[data-carousel-next]")!;
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  let index = 0;
+  let timer: ReturnType<typeof setInterval> | null = null;
+
+  function syncDots() {
+    dots.forEach((dot, di) => {
+      if (di === index) dot.setAttribute("aria-current", "true");
+      else dot.removeAttribute("aria-current");
+    });
+  }
+
+  function goTo(i: number, animate = true) {
+    index = (i + cards.length) % cards.length;
+    viewport.scrollTo({
+      left: index * viewport.clientWidth,
+      behavior: animate && !reduce ? "smooth" : "auto",
+    });
+    syncDots();
+  }
+
+  // 手动滑动时同步页码
+  viewport.addEventListener(
+    "scroll",
+    () => {
+      const i = Math.min(cards.length - 1, Math.round(viewport.scrollLeft / viewport.clientWidth));
+      if (i !== index) {
+        index = i;
+        syncDots();
+      }
+    },
+    { passive: true },
+  );
+
+  function play() {
+    if (reduce || timer) return;
+    timer = setInterval(() => goTo(index + 1), 5000);
+  }
+  function stop() {
+    if (timer) {
+      clearInterval(timer);
+      timer = null;
+    }
+  }
+
+  prevBtn.addEventListener("click", () => {
+    goTo(index - 1);
+    play();
+  });
+  nextBtn.addEventListener("click", () => {
+    goTo(index + 1);
+    play();
+  });
+  dots.forEach((dot, di) =>
+    dot.addEventListener("click", () => {
+      goTo(di);
+      play();
+    }),
+  );
+  section.addEventListener("pointerenter", stop);
+  section.addEventListener("pointerleave", play);
+  section.addEventListener("focusin", stop);
+  section.addEventListener("focusout", play);
+  document.addEventListener("visibilitychange", () => (document.hidden ? stop() : play()));
+  addEventListener("resize", () => goTo(index, false));
+
+  syncDots();
+  controls.classList.remove("hidden");
+  controls.classList.add("flex");
+  dotsBar.classList.remove("hidden");
+  dotsBar.classList.add("flex");
+  play();
+
+  // ---------- 分类筛选：只作用于网格，轮播常驻 ----------
   const bar = document.getElementById("filter-bar")!;
   const pills = [...bar.querySelectorAll<HTMLButtonElement>("button[data-filter]")];
-  const cards = [...document.querySelectorAll<HTMLElement>("#app-grid > [data-category]")];
-  const featuredSection = document.getElementById("featured")!;
+  const gridCards = [...document.querySelectorAll<HTMLElement>("#app-grid > [data-category]")];
   const empty = document.getElementById("grid-empty")!;
 
   const fromUrl = new URLSearchParams(location.search).get("c");
@@ -299,14 +444,9 @@ const categoryLabel = (app: App) => CATEGORIES.find((c) => c.id === app.category
     for (const pill of pills) {
       pill.setAttribute("aria-pressed", String(pill.dataset.filter === filter));
     }
-    // 「全部」：精选应用只在顶部索引区出现；筛选时精选区让位，被筛中的精选应用回网格
-    featuredSection.hidden = filter !== "all";
     let visible = 0;
-    for (const card of cards) {
-      const show =
-        filter === "all"
-          ? !card.dataset.featured
-          : card.dataset.category === filter;
+    for (const card of gridCards) {
+      const show = filter === "all" || card.dataset.category === filter;
       card.hidden = !show;
       if (show) card.style.setProperty("--i", String(visible++));
     }
@@ -325,7 +465,7 @@ const categoryLabel = (app: App) => CATEGORIES.find((c) => c.id === app.category
       else url.searchParams.set("c", pill.dataset.filter!);
       history.replaceState(null, "", url);
       // 重触发入场动画
-      for (const card of cards) {
+      for (const card of gridCards) {
         if (card.hidden) continue;
         card.style.animation = "none";
         void card.offsetWidth;
