@@ -139,11 +139,12 @@ interface App {
 }
 ```
 
-- 展示形态（2026-09 更新）：**分类目录页**——眼球与效率分工，首页速览引流，`/apps` 负责浏览与转化。页面结构：Hero（标题 + tabular-nums 数字条）→ Featured 精选索引（`featured` 标记，排印式大字行，靠字号与留白建立层级、不用装饰图；`cover` 就绪后行右侧接截图缩略图）→ 分类筛选 pills（按用途：实验/数据/阅读/生活/工具，vanilla JS 渐进增强，筛选态同步 `?c=` 到 URL）→ 应用网格 → 早期作品时间线（archived 不进网格）。
+- 展示形态（2026-09 v4 更新）：**大卡轮播目录页**。页面结构：Hero（标题 + 一句话说明，无统计数字条）→ Featured 全量大卡自动轮播（全部应用出场，5s 自动翻页循环，箭头/页码点手动，悬停暂停，`prefers-reduced-motion` 停用自动播放；`cover` 就绪后卡片右侧接截图）→ 分类筛选 pills（按用途：实验/数据/阅读/生活/工具，只过滤下方网格，筛选态同步 `?c=` 到 URL）→ 应用网格 → 早期作品时间线（archived 不进网格，死链退化为纯文本）。
 - 分类原则：按用途（访客视角）分类，技术栈是卡片 tag 不参与分类；`category` 为可选字段，漏填的应用落「未分类」照常展示，加应用永不被 schema 卡住。
-- 交互：筛选时 Featured 区隐藏、被筛中的精选应用回网格；pill 用 `aria-pressed` 驱动选中态；网格重排 200ms 淡入上移 stagger 40ms，`prefers-reduced-motion` 时关闭；无 JS 时 pills 隐藏、精选 + 全量网格照常可读。
-- 排序：网格 Live 优先再按 addedAt 倒序；时间线按 addedAt 倒序；`vibeCoded` 应用带 ✦ 徽章呼应 AI 主题。
-- 首页含「Vibe Coding Apps」速览（优先 `featured`，不足三个用其余 live 应用补齐），引流到 `/apps`。
+- 交互：轮播 scroll-snap + 自动翻页常驻，不受筛选影响；pill 用 `aria-pressed` 驱动选中态；网格重排 200ms 淡入上移 stagger 40ms，`prefers-reduced-motion` 时关闭；无 JS 时轮播可横滑、控制件隐藏、全量网格照常可读。
+- 链接策略（2026-09-05 对照 Cloudflare API 核实）：有自定义域名一律用自定义域名（reading-challenge / family-tree 已切换），无自定义域用 `*.pages.dev` 默认域；已下线的应用移除链接。`/apps` 页不标注 vibe-coded（`AppCard.vibeBadge` 开关，首页速览保留）。
+- 排序：轮播与网格均 Live → WIP → Archived，同状态按 addedAt 倒序；时间线按 addedAt 倒序。
+- 首页含「Vibe Coding Apps」速览（优先 `featured`，不足三个用其余 live 应用补齐，带 ✦ vibe-coded 徽章），引流到 `/apps`。
 
 ## 7. 迁移策略（G6）
 
